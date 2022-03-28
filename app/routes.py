@@ -10,9 +10,11 @@ def test():
 #################### /auth ####################
 @app.route("/auth/login", methods=["POST"])
 def auth_login():
+    data = request.get_json()
     # log a user into their session
-    auth.login()
-    return
+    auth.login(data['email'], data['password'])
+    
+    return json.dumps(auth.generate_token(data['email']))
 
 @app.route("/auth/logout", methods=["POST"])
 def auth_logout():
@@ -22,9 +24,11 @@ def auth_logout():
 
 @app.route("/auth/register", methods=["POST"])
 def auth_register():
+    data = request.get_json()
     #register a user account
-    auth.register()
-    return
+    auth.register(data['email'], data['password'])
+    
+    return json.dumps(auth.generate_token(data['email']))
 
 @app.route("/auth/remove", methods=["DELETE"])
 def auth_remove():
