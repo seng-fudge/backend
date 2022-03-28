@@ -19,7 +19,7 @@ def auth_login():
 @app.route("/auth/logout", methods=["POST"])
 def auth_logout():
     # log a user out of their session (also disconect all api sessions)
-    auth.logout
+    auth.logout()
 
 @app.route("/auth/register", methods=["POST"])
 def auth_register():

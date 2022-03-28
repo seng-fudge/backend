@@ -28,7 +28,7 @@ def init_app():
         return app
 
 def default_handler(err):
-    "Handle errors"
+    """Handle errors"""
     response = err.get_response()
     print('response', err, err.get_response())
     response.data = dumps({

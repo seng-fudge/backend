@@ -35,7 +35,7 @@ def login(email, password):
 
 
 def logout():
-    "docstring"
+    """docstring"""
     return
 
 
@@ -61,7 +61,7 @@ def register(email, password):
     registered_user = User.query.filter(User.email == email).first()
 
     if registered_user is not None:
-        raise InputError(description="Email alreayd registered with account")
+        raise InputError(description="Email already registered with account")
 
     # Check valid inputs
     if not validate_email(email):
@@ -106,16 +106,16 @@ def generate_token(email):
 
 
 def remove():
-    "docstring"
+    """docstring"""
     return
 
 def validate_email(email):
-    "Docstring"
+    """Docstring"""
     email_regex = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$"
     return (re.fullmatch(email_regex,email))
 
 def validate_password(password):
-    "docstring"
+    """docstring"""
     if len(password) < 8:
         return False
 
