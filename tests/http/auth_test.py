@@ -8,7 +8,7 @@ from tests.http.fixtures import test_app
 '''
 
 
-def test_invalidEmail_register():
+def test_invalid_email_register():
     with test_app.test_client() as app:
         resp = app.post("/auth/register",
                         json={"email": "email", "password": "Password123"})
@@ -16,7 +16,7 @@ def test_invalidEmail_register():
         assert resp.status_code == 400
 
 
-def test_invalidPassword_register():
+def test_invalid_password_register():
     with test_app.test_client() as app:
         resp = app.post(
             "/auth/register", json={"email": "email@email.com", "password": "Password"})
@@ -48,7 +48,7 @@ def test_working_register():
         assert "token" in json.loads(resp.data)
 
 
-def test_emailAlreadyRegistered_register():
+def test_email_already_registered_register():
     with test_app.test_client() as app:
         resp = app.post(
             "/auth/register", json={"email": "email2@email.com", "password": "Password123"})
@@ -68,7 +68,7 @@ def test_emailAlreadyRegistered_register():
 '''
 
 
-def test_invalidEmail_login():
+def test_invalid_email_login():
     with test_app.test_client() as app:
         resp = app.post("/auth/login",
                         json={"email": "email", "password": "Password123"})
@@ -76,7 +76,7 @@ def test_invalidEmail_login():
         assert resp.status_code == 400
 
 
-def test_invalidPassword_login():
+def test_invalid_password_login():
     with test_app.test_client() as app:
         app.post(
             "/auth/register", json={"email": "email3@email.com", "password": "Password123"})

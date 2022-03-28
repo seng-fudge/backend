@@ -20,7 +20,6 @@ def auth_login():
 def auth_logout():
     # log a user out of their session (also disconect all api sessions)
     auth.logout
-    return
 
 @app.route("/auth/register", methods=["POST"])
 def auth_register():
@@ -34,7 +33,6 @@ def auth_register():
 def auth_remove():
     #delete user account
     auth.remove()
-    return
 
 ###############################################
 
@@ -43,12 +41,12 @@ def auth_remove():
 def apis_connect():
     # connect all apis (associated with session)
     apis.connect()
-    return
+
 @app.route("/apis/disconnect", methods=["POST"])
 def apis_disconnect():
     # disconnect all apis (associated with session)
     apis.disconnect()
-    return
+
 ###############################################
 
 #################### /user ####################
