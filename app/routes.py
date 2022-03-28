@@ -10,7 +10,7 @@ def test():
 #################### /auth ####################
 @app.route("/auth/login", methods=["POST"])
 def auth_login():
-    # log a user into their session (connect all their api sessions)
+    # log a user into their session
     auth.login()
     return
 
@@ -37,18 +37,13 @@ def auth_remove():
 #################### /apis ####################
 @app.route("/apis/connect", methods=["POST"])
 def apis_connect():
-    # connect all apis (associated with a user)
+    # connect all apis (associated with session)
     apis.connect()
     return
 @app.route("/apis/disconnect", methods=["POST"])
 def apis_disconnect():
-    # disconnect all apis (associated with a user)
+    # disconnect all apis (associated with session)
     apis.disconnect()
-    return
-@app.route("/apis/renew", methods=["POST"])
-def apis_renew():
-    # disconnect all apis, and renew tokens (associated with a user)
-    apis.renew()
     return
 ###############################################
 
