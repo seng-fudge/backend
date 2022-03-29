@@ -1,5 +1,6 @@
+[![codecov](https://codecov.io/gh/seng-fudge/backend/branch/main/graph/badge.svg?token=I93Q5AC8AV)](https://codecov.io/gh/seng-fudge/backend)
 # backend
-Why did nobody think of this?!
+
 
 # Starting flask server
 To start flask server use python 3.8

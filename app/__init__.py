@@ -1,8 +1,9 @@
 from json import dumps
+from datetime import datetime
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+
 
 startTime = datetime.now()
 
@@ -13,7 +14,7 @@ def init_app():
     """Construct the core application."""
     app = Flask(__name__, instance_relative_config=False)
     app.config.from_object('config.Config')
-    app.register_error_handler(Exception, defaultHandler)
+    app.register_error_handler(Exception, default_handler)
 
     CORS(app)
 
@@ -21,12 +22,13 @@ def init_app():
 
     with app.app_context():
         from app import routes
-        
+
         db.create_all()  # Create sql tables for our data models
 
         return app
-    
-def defaultHandler(err):
+
+def default_handler(err):
+    """Handle errors"""
     response = err.get_response()
     print('response', err, err.get_response())
     response.data = dumps({

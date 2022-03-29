@@ -1,0 +1,96 @@
+import json
+from app import init_app
+test_app = init_app()
+'''
+            ========================================================
+                            auth register tests
+            ========================================================
+'''
+
+
+def test_invalid_email_register():
+    with test_app.test_client() as app:
+        resp = app.post("/auth/register",
+                        json={"email": "email", "password": "Password123"})
+
+        assert resp.status_code == 400
+
+
+def test_invalid_password_register():
+    with test_app.test_client() as app:
+        resp = app.post(
+            "/auth/register", json={"email": "email@email.com", "password": "Password"})
+
+        assert resp.status_code == 400
+
+        resp = app.post(
+            "/auth/register", json={"email": "email@email.com", "password": "password123"})
+
+        assert resp.status_code == 400
+
+        resp = app.post(
+            "/auth/register", json={"email": "email@email.com", "password": "PASSWORD123"})
+
+        assert resp.status_code == 400
+
+        resp = app.post(
+            "/auth/register", json={"email": "email@email.com", "password": "Passw23"})
+
+        assert resp.status_code == 400
+
+
+def test_working_register():
+    with test_app.test_client() as app:
+        resp = app.post(
+            "/auth/register", json={"email": "email@email.com", "password": "Password123"})
+
+        assert resp.status_code == 200
+        assert "token" in json.loads(resp.data)
+
+
+def test_email_already_registered_register():
+    with test_app.test_client() as app:
+        resp = app.post(
+            "/auth/register", json={"email": "email2@email.com", "password": "Password123"})
+
+        assert resp.status_code == 200
+
+        resp = app.post(
+            "/auth/register", json={"email": "email2@email.com", "password": "Password123"})
+
+        assert resp.status_code == 400
+
+
+'''
+            ========================================================
+                            auth login tests
+            ========================================================
+'''
+
+
+def test_invalid_email_login():
+    with test_app.test_client() as app:
+        resp = app.post("/auth/login",
+                        json={"email": "email", "password": "Password123"})
+
+        assert resp.status_code == 400
+
+
+def test_invalid_password_login():
+    with test_app.test_client() as app:
+        app.post(
+            "/auth/register", json={"email": "email3@email.com", "password": "Password123"})
+
+        resp = app.post("/auth/login",
+                        json={"email": "email3@email.com", "password": "Password321"})
+        assert resp.status_code == 400
+
+def test_working_login():
+    with test_app.test_client() as app:
+        app.post(
+            "/auth/register", json={"email": "email4@email.com", "password": "Password123"})
+
+        resp = app.post("/auth/login",
+                        json={"email": "email4@email.com", "password": "Password123"})
+        assert resp.status_code == 200
+        assert "token" in json.loads(resp.data)

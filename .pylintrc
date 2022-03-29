@@ -1,0 +1,16 @@
+[MASTER]
+ignore-patterns=.*\_test.py
+
+disable=missing-module-docstring,
+    unused-wildcard-import,
+    wildcard-import,
+    missing-class-docstring,
+    consider-using-sys-exit,
+    too-few-public-methods,
+    missing-function-docstring,
+    import-outside-toplevel,
+    unused-import,
+    cyclic-import,
+    unused-argument
+
+ignored-classes = scoped_session,

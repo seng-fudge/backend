@@ -10,27 +10,29 @@ def test():
 #################### /auth ####################
 @app.route("/auth/login", methods=["POST"])
 def auth_login():
+    data = request.get_json()
     # log a user into their session
-    auth.login()
-    return
+    auth.login(data['email'], data['password'])
+
+    return json.dumps(auth.generate_token(data['email']))
 
 @app.route("/auth/logout", methods=["POST"])
 def auth_logout():
     # log a user out of their session (also disconect all api sessions)
-    auth.logout
-    return
+    auth.logout()
 
 @app.route("/auth/register", methods=["POST"])
 def auth_register():
+    data = request.get_json()
     #register a user account
-    auth.register()
-    return
+    auth.register(data['email'], data['password'])
+
+    return json.dumps(auth.generate_token(data['email']))
 
 @app.route("/auth/remove", methods=["DELETE"])
 def auth_remove():
     #delete user account
     auth.remove()
-    return
 
 ###############################################
 
@@ -39,12 +41,12 @@ def auth_remove():
 def apis_connect():
     # connect all apis (associated with session)
     apis.connect()
-    return
+
 @app.route("/apis/disconnect", methods=["POST"])
 def apis_disconnect():
     # disconnect all apis (associated with session)
     apis.disconnect()
-    return
+
 ###############################################
 
 #################### /user ####################
@@ -58,5 +60,5 @@ def user_data():
         # Get user data
         user.get_data()
         return
-    
+
 ###############################################
