@@ -9,6 +9,8 @@ disable=missing-module-docstring,
     too-few-public-methods,
     missing-function-docstring,
     import-outside-toplevel,
-    unused-import
+    unused-import,
+    cyclic-import,
+    unused-argument
 
 ignored-classes = scoped_session,
