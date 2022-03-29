@@ -1,6 +1,7 @@
+import signal
 import config
 from app import init_app
-import signal
+
 
 def graceful_exit(*args):
     """add things here to close/disconnect/remove/delete on exit"""

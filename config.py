@@ -16,7 +16,7 @@ class Config:
 
     # Import environ if not on server where enviorment variables already saved
     if "ON_SERVER" not in os.environ:
-        import enviro # pylint: disable=import-error
+        import enviro # pylint: disable=import-error, import-outside-toplevel
 
     # Gets uri for databse from eviro if on heroku, otherwise uses local sqlite
     if "DATABASE_URL" in os.environ:

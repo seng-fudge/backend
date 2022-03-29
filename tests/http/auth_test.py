@@ -1,6 +1,6 @@
 import json
-from tests.http.fixtures import test_app
-
+from app import init_app
+test_app = init_app()
 '''
             ========================================================
                             auth register tests

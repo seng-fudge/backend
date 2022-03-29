@@ -100,7 +100,11 @@ def generate_token(email):
     db.session.add(new_session)
     db.session.commit()
 
-    token = jwt.encode({'email' : user.email, 'session_id' : new_session.id}, SECRET,  algorithm='HS256')
+    token = jwt.encode(
+        {'email' : user.email, 'session_id' : new_session.id},
+        SECRET,
+        algorithm='HS256'
+    )
 
     return {'token' : token}
 

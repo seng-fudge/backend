@@ -1,8 +1,7 @@
-from app import db
-
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
 
+from app import db
 class Token(db.Model):
     __tablename__ = "tokens"
 
