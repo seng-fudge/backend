@@ -7,3 +7,5 @@ disable=missing-module-docstring,
     missing-class-docstring,
     consider-using-sys-exit,
     too-few-public-methods,
+
+ignored-classes = scoped_session,

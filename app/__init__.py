@@ -21,7 +21,7 @@ def init_app():
     db.init_app(app)
 
     with app.app_context():
-        from app import routes
+        from app import routes #pylint:ignore
 
         db.create_all()  # Create sql tables for our data models
 

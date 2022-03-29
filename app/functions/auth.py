@@ -116,7 +116,7 @@ def remove():
 def validate_email(email):
     """Docstring"""
     email_regex = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$"
-    return (re.fullmatch(email_regex,email))
+    return re.fullmatch(email_regex,email)
 
 def validate_password(password):
     """docstring"""
