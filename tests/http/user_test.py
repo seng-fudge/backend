@@ -131,3 +131,74 @@ def test_working_post_user_data():
         data = json.loads(resp.data)
 
         assert data == sent_data
+
+
+def test_all_types_bad_data_post_user_data():
+    with test_app.test_client() as app:
+        resp = app.post("/auth/login",
+                json={"email": "email4@email.com", "password": "Password123"})
+        assert resp.status_code == 200
+        data = json.loads(resp.data)
+        token = data["token"]
+
+        #get original data
+        resp = app.get("/user/data", headers = {"token": token})
+        assert resp.status_code == 200
+        orig_data = json.loads(resp.data)
+
+        sent_data = {
+                "businessName" : "Fudge",
+                "contactName" : "Some Guy",
+                "electronicMail" : "some.guy@mail.com",
+                "supplierID" : 1,
+                "street" : "street rd",
+                "city" : "city",
+                "postcode" : "2000",
+                "country" : "Australia",
+                "currency" : "AUD"
+            }
+
+        sent_data["businessName"] = 42
+        resp = app.post("/user/data",headers = {"token": token},json = sent_data)
+        assert resp.status_code == 400
+        sent_data["businessName"] = "Fudge"
+
+        sent_data["contactName"] = 42
+        resp = app.post("/user/data",headers = {"token": token},json = sent_data)
+        assert resp.status_code == 400
+        sent_data["contactName"] = "Some Guy"
+
+        sent_data["electronicMail"] = 42
+        resp = app.post("/user/data",headers = {"token": token},json = sent_data)
+        assert resp.status_code == 400
+        sent_data["electronicMail"] = "some.guy@mail.com"
+
+        sent_data["supplierID"] = "im supposed to be an int"
+        resp = app.post("/user/data",headers = {"token": token},json = sent_data)
+        assert resp.status_code == 400
+        sent_data["SupplierID"] = 42
+
+        sent_data["street"] = 42
+        resp = app.post("/user/data",headers = {"token": token},json = sent_data)
+        assert resp.status_code == 400
+        sent_data["street"] = "street rd"
+
+        sent_data["city"] = 42
+        resp = app.post("/user/data",headers = {"token": token},json = sent_data)
+        assert resp.status_code == 400
+        sent_data["city"] = "city"
+
+        sent_data["postcode"] = 42
+        resp = app.post("/user/data",headers = {"token": token},json = sent_data)
+        assert resp.status_code == 400
+        sent_data["postcode"] = "2000"
+
+        sent_data["country"] = 42
+        resp = app.post("/user/data",headers = {"token": token},json = sent_data)
+        assert resp.status_code == 400
+        sent_data["country"] = "Australia"
+
+        sent_data["currency"] = 42
+        resp = app.post("/user/data",headers = {"token": token},json = sent_data)
+        assert resp.status_code == 400
+        sent_data["currency"] = "AUD"

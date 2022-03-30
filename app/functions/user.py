@@ -100,10 +100,6 @@ def update_data(user_id: int, user_data: object):
 
 def good_data(user_data: object):
 
-    email_regex = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$"
-    if not re.fullmatch(email_regex, user_data["electronicMail"]):
-        raise InputError(description="Email is invalid")
-
     if not isinstance(user_data["businessName"], str):
         raise InputError("businessName should be of type string")
 
@@ -130,3 +126,8 @@ def good_data(user_data: object):
 
     if not isinstance(user_data["currency"], str):
         raise InputError("currency should be of type string")
+
+    email_regex = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$"
+    if not re.fullmatch(email_regex, user_data["electronicMail"]):
+        raise InputError(description="Email is invalid")
+
