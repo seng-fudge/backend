@@ -55,10 +55,7 @@ def apis_disconnect():
 @app.route("/user/data", methods=["GET","POST"])
 def user_data():
     token = request.headers["token"]
-    try:
-        user_id = auth.validate_token(token)
-    except:
-        raise AccessError(description="Bad Token")
+    user_id = auth.validate_token(token)
 
     if request.method == "POST":
         # update user data

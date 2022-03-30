@@ -163,9 +163,13 @@ def validate_token(token):
     -------
     userID - integer
     """
-    decoded_token = jwt.decode(token,
-    SECRET,
-    algorithms=['HS256'])
+    try:
+        decoded_token = jwt.decode(token,
+            SECRET,
+            algorithms=['HS256']
+        )
+    except:
+        raise AccessError(description="Bad Token")
 
     session_id = decoded_token['session_id']
 
