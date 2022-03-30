@@ -55,19 +55,20 @@ def apis_disconnect():
 @app.route("/user/data", methods=["GET","POST"])
 def user_data():
     token = request.headers["token"]
-    userid = auth.validate_token(token)
+    user_id = auth.validate_token(token)
 
     if request.method == "POST":
         # update user data
-        userData = request.get_json()
+        users_data = request.get_json()
         try:
-            user.update_data(userid, userData)
-        except KeyError:
-            raise InputError
+            user.update_data(user_id, users_data)
+        except KeyError as missing_data:
+            raise InputError from missing_data
         return {}
     if request.method == "GET":
         # Get user data
-        data = user.get_data(userid)
+        data = user.get_data(user_id)
         return data
 
+    return {}
 ###############################################

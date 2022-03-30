@@ -2,21 +2,21 @@ import re
 from app.functions.error import AccessError, InputError
 from app.models import Accountdata, db
 
-def get_data(userID: int):
+def get_data(user_id: int):
     """
     Gets user data from the database.
     Returns user data as a dict
 
     Raises issue if variables given are invalid:
-        - userID
+        - user_id
 
     Parameters
     ----------
-    'userID' - integer
+    'user_id' - integer
 
     Returns
     -------
-    userData = {
+    user_data = {
         "businessName" : "company"
         "contactName" : "first last"
         "electronicMail" : "firstlast@company.com"
@@ -28,8 +28,8 @@ def get_data(userID: int):
         "currency" : "AUD"
     }
     """
-    accountinfo = Accountdata.query.filter(Accountdata.userId == userID).first()
-    userData = {
+    accountinfo = Accountdata.query.filter(Accountdata.userId == user_id).first()
+    user_data = {
         "businessName" : accountinfo.businessName,
         "contactName" : accountinfo.contactName,
         "electronicMail" : accountinfo.electronicMail,
@@ -42,19 +42,19 @@ def get_data(userID: int):
     }
 
 
-    return userData
+    return user_data
 
-def update_data(userID: int, userData: object):
+def update_data(user_id: int, user_data: object):
     """
     Updates user data in database.
     Returns user data as a dict
     Raises issue if variables given are invalid:
-        - userID
+        - user_id
 
     Parameters
     ----------
-    'userID' - integer
-    'userData' - object
+    'user_id' - integer
+    'user_data' - object
         mandatory feilds:
             "businessName"
             "contactName"
@@ -68,7 +68,7 @@ def update_data(userID: int, userData: object):
 
     Returns
     -------
-    userData = {
+    user_data = {
         "businessName" : "company"
         "contactName" : "first last"
         "electronicMail" : "firstlast@company.com"
@@ -84,49 +84,49 @@ def update_data(userID: int, userData: object):
     -------
         Input error - when given bad data
     """
-    good_data(userData)
+    good_data(user_data)
     #get user
-    accountinfo = Accountdata.query.filter(Accountdata.userId == userID).first()
-    accountinfo.businessName = userData["businessName"]
-    accountinfo.contactName = userData["contactName"]
-    accountinfo.electronicMail = userData["electronicMail"]
-    accountinfo.supplierID = userData["supplierID"]
-    accountinfo.street = userData["street"]
-    accountinfo.city = userData["city"]
-    accountinfo.postcode = userData["postcode"]
-    accountinfo.country = userData["country"]
-    accountinfo.currency = userData["currency"]
+    accountinfo = Accountdata.query.filter(Accountdata.userId == user_id).first()
+    accountinfo.businessName = user_data["businessName"]
+    accountinfo.contactName = user_data["contactName"]
+    accountinfo.electronicMail = user_data["electronicMail"]
+    accountinfo.supplierID = user_data["supplierID"]
+    accountinfo.street = user_data["street"]
+    accountinfo.city = user_data["city"]
+    accountinfo.postcode = user_data["postcode"]
+    accountinfo.country = user_data["country"]
+    accountinfo.currency = user_data["currency"]
     db.session.commit()
 
-def good_data(userData: object):
+def good_data(user_data: object):
 
     email_regex = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$"
-    if not re.fullmatch(email_regex, userData["electronicMail"]):
+    if not re.fullmatch(email_regex, user_data["electronicMail"]):
         raise InputError(description="Email is invalid")
 
-    if type(userData["businessName"]) != str:
+    if isinstance(user_data["businessName"], str):
         raise InputError
 
-    if type(userData["contactName"]) != str:
+    if isinstance(user_data["contactName"], str):
         raise InputError
 
-    if type(userData["electronicMail"]) != str:
+    if isinstance(user_data["electronicMail"], str):
         raise InputError
 
-    if type(userData["supplierID"]) != int:
+    if isinstance(user_data["supplierID"], int):
         raise InputError
 
-    if type(userData["street"]) != str:
+    if isinstance(user_data["street"], str):
         raise InputError
 
-    if type(userData["city"]) != str:
+    if isinstance(user_data["city"], str):
         raise InputError
 
-    if type(userData["postcode"]) != str:
+    if isinstance(user_data["postcode"], str):
         raise InputError
 
-    if type(userData["country"]) != str:
+    if isinstance(user_data["country"], str):
         raise InputError
 
-    if type(userData["currency"]) != str:
+    if isinstance(user_data["currency"], str):
         raise InputError
