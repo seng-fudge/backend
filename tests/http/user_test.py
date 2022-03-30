@@ -59,7 +59,7 @@ def test_missing_data_post_user_data():
 
         assert data['electronicMail'] != "some.guy@mail.com"
 
-def test_incorrect_data_post_user_data():
+def test_bad_email_post_user_data():
     with test_app.test_client() as app:
         resp = app.post("/auth/login",
                 json={"email": "email4@email.com", "password": "Password123"})
@@ -75,8 +75,8 @@ def test_incorrect_data_post_user_data():
         sent_data = {
                 "businessName" : "Fudge",
                 "contactName" : "Some Guy",
-                "electronicMail" : "some.guy@mail.com",
-                "supplierID" : "im supposed to be an int",
+                "electronicMail" : "obvi not an email",
+                "supplierID" : 1,
                 "street" : "street rd",
                 "city" : "city",
                 "postcode" : "2000",
