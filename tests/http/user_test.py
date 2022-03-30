@@ -141,11 +141,6 @@ def test_all_types_bad_data_post_user_data():
         data = json.loads(resp.data)
         token = data["token"]
 
-        #get original data
-        resp = app.get("/user/data", headers = {"token": token})
-        assert resp.status_code == 200
-        orig_data = json.loads(resp.data)
-
         sent_data = {
                 "businessName" : "Fudge",
                 "contactName" : "Some Guy",
@@ -176,7 +171,7 @@ def test_all_types_bad_data_post_user_data():
         sent_data["supplierID"] = "im supposed to be an int"
         resp = app.post("/user/data",headers = {"token": token},json = sent_data)
         assert resp.status_code == 400
-        sent_data["SupplierID"] = 42
+        sent_data["supplierID"] = 42
 
         sent_data["street"] = 42
         resp = app.post("/user/data",headers = {"token": token},json = sent_data)
