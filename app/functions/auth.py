@@ -3,8 +3,8 @@ import re
 import time
 import jwt
 
-from app.functions.error import InputError
-from app.models import Session, User, db
+from app.functions.error import AccessError, InputError
+from app.models import Accountdata, Session, User, db
 
 SECRET = os.environ.get('SECRET')
 
@@ -72,8 +72,20 @@ def register(email, password):
 
     # Create new user
     new_user = User(email = email, password = password)
+    new_user_data = Accountdata(
+        businessName = None,
+        contactName = None,
+        electronicMail = email,
 
+        supplierID = None,
+        street = None,
+        city = None,
+        postcode = None,
+        country = None,
+        currency = None
+    )
     db.session.add(new_user)
+    db.session.add(new_user_data)
     db.session.commit()
 
 def generate_token(email):
@@ -133,3 +145,29 @@ def validate_password(password):
         return False
 
     return True
+
+def validate_token(token):
+    """
+    validates session and token
+    returns user id from token.
+
+    Raises issue if variables given are invalid:
+        - token
+
+    Parameters
+    ----------
+    'token' - string
+
+    Returns
+    -------
+    userID - integer
+    """
+    decoded_token = jwt.decode(token,
+    SECRET,
+    algorithms=['HS256'])
+
+    session_id = decoded_token['session_id']
+
+    # return userid
+    session = Session.query.filter(Session.id == session_id).first()
+    return session.userId

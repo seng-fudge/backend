@@ -50,15 +50,19 @@ def apis_disconnect():
 ###############################################
 
 #################### /user ####################
-@app.route("/user/data", methods=["POST", "GET"])
+@app.route("/user/data", methods=["GET","POST"])
 def user_data():
+    token = request.headers["token"]
+    userid = auth.validate_token(token)
+
     if request.method == "POST":
         # update user data
-        user.update_data()
+        userData = request.get_data()
+        user.update_data(userid,userData)
         return
     if request.method == "GET":
         # Get user data
-        user.get_data()
+        user.get_data(userid)
         return
 
 ###############################################
