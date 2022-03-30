@@ -39,7 +39,7 @@ def get_data(userID):
         "city" : accountinfo.city,
         "postcode" : accountinfo.postcode,
         "country" : accountinfo.country,
-        "currency" : accountinfo.currecy
+        "currency" : accountinfo.currency
     }
 
 

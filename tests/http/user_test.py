@@ -1,6 +1,5 @@
 import json
-from app import init_app
-test_app = init_app()
+from tests.http.test_app import test_app
 '''
             ========================================================
                             get_user_data tests
@@ -15,5 +14,7 @@ def test_working_get_user_data():
         assert resp.status_code == 200
         data = json.loads(resp.data)
         resp = app.get("/user/data", headers = {"token": data["token"]})
+        assert resp.status_code == 200
         data = json.loads(resp.data)
+        print(data)
         assert data['electronicMail'] == "email4@email.com"

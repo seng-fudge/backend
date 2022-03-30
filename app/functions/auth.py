@@ -73,6 +73,7 @@ def register(email, password):
     # Create new user
     new_user = User(email = email, password = password)
     new_user_data = Accountdata(
+        user = new_user,
         businessName = None,
         contactName = None,
         electronicMail = email,
