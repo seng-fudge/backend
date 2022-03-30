@@ -169,7 +169,7 @@ def validate_token(token):
             algorithms=['HS256']
         )
     except:
-        raise AccessError(description="Bad Token")
+        raise AccessError(description="Bad Token") # pylint: disable=raise-missing-from
 
     session_id = decoded_token['session_id']
 
