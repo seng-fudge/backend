@@ -1,6 +1,8 @@
 import json
+from os import execv
 from flask import current_app as app, request
 from app.functions import apis, auth, user
+from app.functions.error import InputError
 
 @app.route("/", methods = ["GET"])
 def test():
@@ -58,7 +60,10 @@ def user_data():
     if request.method == "POST":
         # update user data
         userData = request.get_json()
-        user.update_data(userid, userData)
+        try:
+            user.update_data(userid, userData)
+        except KeyError:
+            raise InputError
         return {}
     if request.method == "GET":
         # Get user data
