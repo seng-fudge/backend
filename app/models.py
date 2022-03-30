@@ -39,7 +39,7 @@ class Accountdata(db.Model):
     supplierID = Column(Integer, nullable=True)
     street = Column(Text, nullable=True)
     city = Column(Text, nullable=True)
-    postcode = Column(Integer, nullable=True)
+    postcode = Column(Text, nullable=True)
     country = Column(Text, nullable=True)
     currency = Column(Text, nullable=True)
 

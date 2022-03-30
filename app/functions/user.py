@@ -1,7 +1,6 @@
 import re
-
 from app.functions.error import AccessError, InputError
-from app.models import Accountdata
+from app.models import Accountdata, db
 
 def get_data(userID):
     """
@@ -54,11 +53,12 @@ def update_data(userID, userData):
     accountinfo = Accountdata.query.filter(Accountdata.userId == userID).first()
     accountinfo.businessName = userData["businessName"]
     accountinfo.contactName = userData["contactName"]
-    accountinfo.electronicMail = userData["elecronicMail"]
+    accountinfo.electronicMail = userData["electronicMail"]
     accountinfo.supplierID = userData["supplierID"]
     accountinfo.street = userData["street"]
     accountinfo.city = userData["city"]
     accountinfo.postcode = userData["postcode"]
     accountinfo.country = userData["country"]
     accountinfo.currency = userData["currency"]
+    db.session.commit()
 

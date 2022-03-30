@@ -57,9 +57,9 @@ def user_data():
 
     if request.method == "POST":
         # update user data
-        userData = request.get_data()
-        user.update_data(userid,userData)
-        return
+        userData = request.get_json()
+        user.update_data(userid, userData)
+        return {}
     if request.method == "GET":
         # Get user data
         data = user.get_data(userid)
