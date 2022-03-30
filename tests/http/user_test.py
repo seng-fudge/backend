@@ -6,19 +6,26 @@ from tests.http.test_app import test_app
             ========================================================
 '''
 
+def test_bad_token_get_user_data():
+    with test_app.test_client() as app:
+        resp = app.get("/user/data",
+            headers = {"token": "i promise i am a token"})
+
+        assert resp.status_code == 403
 
 def test_working_get_user_data():
     with test_app.test_client() as app:
         resp = app.post("/auth/login",
                 json={"email": "email4@email.com", "password": "Password123"})
         assert resp.status_code == 200
+
         data = json.loads(resp.data)
+
         resp = app.get("/user/data", headers = {"token": data["token"]})
         assert resp.status_code == 200
-        data = json.loads(resp.data)
-        print(data)
-        assert data['electronicMail'] == "email4@email.com"
 
+        data = json.loads(resp.data)
+        assert data['electronicMail'] == "email4@email.com"
 
 '''
             ========================================================
@@ -49,7 +56,7 @@ def test_missing_data_post_user_data():
         resp = app.get("/user/data", headers = {"token": data["token"]})
         assert resp.status_code == 200
         data = json.loads(resp.data)
-        print(data)
+
         assert data['electronicMail'] != "some.guy@mail.com"
 
 def test_incorrect_data_post_user_data():

@@ -2,7 +2,7 @@ import json
 from os import execv
 from flask import current_app as app, request
 from app.functions import apis, auth, user
-from app.functions.error import InputError
+from app.functions.error import InputError, AccessError
 
 @app.route("/", methods = ["GET"])
 def test():
@@ -55,7 +55,10 @@ def apis_disconnect():
 @app.route("/user/data", methods=["GET","POST"])
 def user_data():
     token = request.headers["token"]
-    user_id = auth.validate_token(token)
+    try:
+        user_id = auth.validate_token(token)
+    except:
+        raise AccessError(description="Bad Token")
 
     if request.method == "POST":
         # update user data
@@ -63,7 +66,7 @@ def user_data():
         try:
             user.update_data(user_id, users_data)
         except KeyError as missing_data:
-            raise InputError from missing_data
+            raise InputError(description="Json form incomplete") from missing_data
         return {}
     if request.method == "GET":
         # Get user data

@@ -104,29 +104,29 @@ def good_data(user_data: object):
     if not re.fullmatch(email_regex, user_data["electronicMail"]):
         raise InputError(description="Email is invalid")
 
-    if isinstance(user_data["businessName"], str):
-        raise InputError
+    if not isinstance(user_data["businessName"], str):
+        raise InputError("businessName should be of type string")
 
-    if isinstance(user_data["contactName"], str):
-        raise InputError
+    if not isinstance(user_data["contactName"], str):
+        raise InputError("contactName should be of type string")
 
-    if isinstance(user_data["electronicMail"], str):
-        raise InputError
+    if not isinstance(user_data["electronicMail"], str):
+        raise InputError("electronicMail should be of type string")
 
-    if isinstance(user_data["supplierID"], int):
-        raise InputError
+    if not isinstance(user_data["supplierID"], int):
+        raise InputError("supplierID should be of type integer")
 
-    if isinstance(user_data["street"], str):
-        raise InputError
+    if not isinstance(user_data["street"], str):
+        raise InputError("street should be of type string")
 
-    if isinstance(user_data["city"], str):
-        raise InputError
+    if not isinstance(user_data["city"], str):
+        raise InputError("city should be of type string")
 
-    if isinstance(user_data["postcode"], str):
-        raise InputError
+    if not isinstance(user_data["postcode"], str):
+        raise InputError("postcode should be of type string")
 
-    if isinstance(user_data["country"], str):
-        raise InputError
+    if not isinstance(user_data["country"], str):
+        raise InputError("country should be of type string")
 
-    if isinstance(user_data["currency"], str):
-        raise InputError
+    if not isinstance(user_data["currency"], str):
+        raise InputError("currency should be of type string")
