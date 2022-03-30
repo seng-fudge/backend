@@ -130,4 +130,3 @@ def good_data(user_data: object):
     email_regex = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$"
     if not re.fullmatch(email_regex, user_data["electronicMail"]):
         raise InputError(description="Email is invalid")
-
