@@ -67,8 +67,7 @@ def user_data():
         return {}
     if request.method == "GET":
         # Get user data
-        data = user.get_data(user_id)
-        return data
+        return user.get_data(user_id)
 
     return {}
 ###############################################

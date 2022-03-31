@@ -1,4 +1,5 @@
 import re
+from flask import jsonify, make_response
 from app.functions.error import AccessError, InputError
 from app.models import Accountdata, db
 
@@ -40,7 +41,19 @@ def get_data(user_id: int):
         "country" : accountinfo.country,
         "currency" : accountinfo.currency
     }
-
+    data = [
+        accountinfo.businessName,
+        accountinfo.contactName,
+        accountinfo.electronicMail,
+        accountinfo.supplierID,
+        accountinfo.street,
+        accountinfo.city,
+        accountinfo.postcode,
+        accountinfo.country,
+        accountinfo.currency
+    ]
+    if any(item == None for item in data):
+        return make_response(jsonify(user_data), 204)
 
     return user_data
 

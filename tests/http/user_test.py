@@ -13,7 +13,7 @@ def test_bad_token_get_user_data():
 
         assert resp.status_code == 403
 
-def test_working_get_user_data():
+def test_no_data_uploaded_user_data():
     with test_app.test_client() as app:
         resp = app.post("/auth/login",
                 json={"email": "email4@email.com", "password": "Password123"})
@@ -22,10 +22,45 @@ def test_working_get_user_data():
         data = json.loads(resp.data)
 
         resp = app.get("/user/data", headers = {"token": data["token"]})
+        assert resp.status_code == 204
+
+def test_working_get_user_data():
+    with test_app.test_client() as app:
+        resp = app.post("/auth/login",
+                json={"email": "email4@email.com", "password": "Password123"})
+        assert resp.status_code == 200
+        
+        data = json.loads(resp.data)
+        token = data["token"]
+        
+        sent_data = {
+                "businessName" : "Fudge",
+                "contactName" : "Some Guy",
+                "electronicMail" : "some.guy@mail.com",
+                "supplierID" : 42,
+                "street" : "street rd",
+                "city" : "city",
+                "postcode" : "2000",
+                "country" : "Australia",
+                "currency" : "AUD"
+            }
+
+        resp = app.post(
+            "/user/data",
+            headers = {"token": token},
+            json = sent_data
+        )
         assert resp.status_code == 200
 
         data = json.loads(resp.data)
-        assert data['electronicMail'] == "email4@email.com"
+
+        resp = app.get("/user/data", headers = {"token": token})
+        assert resp.status_code == 200
+
+        data = json.loads(resp.data)
+        assert data['electronicMail'] == "some.guy@mail.com"
+
+
 
 '''
             ========================================================
@@ -43,7 +78,7 @@ def test_missing_data_post_user_data():
             headers = {"token": data["token"]},
             json = {
                 "businessName" : "Fudge",
-                "electronicMail" : "some.guy@mail.com",
+                "electronicMail" : "some.other.guy@mail.com",
                 "supplierID" : 42,
                 "street" : "street rd",
                 "city" : "city",
@@ -57,7 +92,7 @@ def test_missing_data_post_user_data():
         assert resp.status_code == 200
         data = json.loads(resp.data)
 
-        assert data['electronicMail'] != "some.guy@mail.com"
+        assert data['electronicMail'] != "some.other.guy@mail.com"
 
 def test_bad_email_post_user_data():
     with test_app.test_client() as app:
@@ -197,3 +232,4 @@ def test_all_types_bad_data_post_user_data():
         resp = app.post("/user/data",headers = {"token": token},json = sent_data)
         assert resp.status_code == 400
         sent_data["currency"] = "AUD"
+
