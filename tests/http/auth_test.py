@@ -93,3 +93,34 @@ def test_working_login():
                         json={"email": "email4@email.com", "password": "Password123"})
         assert resp.status_code == 200
         assert "token" in json.loads(resp.data)
+
+'''
+            ========================================================
+                            auth login tests
+            ========================================================
+'''
+
+def test_working_logout():
+    with test_app.test_client() as app:
+        app.post(
+            "/auth/register", json={"email": "email4@email.com", "password": "Password123"}
+        )
+        
+        resp = app.post("/auth/login",
+                json={"email": "email4@email.com", "password": "Password123"})
+        assert resp.status_code == 200
+        
+        data = json.loads(resp.data)
+        token = data["token"]
+
+        resp = app.post(
+            "/auth/logout",
+            headers={"token":token}
+        )
+        assert resp.status_code == 200
+
+        resp = app.post(
+            "/auth/logout",
+            headers={"token":token}
+        )
+        assert resp.status_code == 200 #this is obviously wrong

@@ -2,7 +2,8 @@ import os
 import re
 import time
 import jwt
-
+import sqlalchemy
+from sqlalchemy import delete
 from app.functions.error import AccessError, InputError
 from app.models import Accountdata, Session, User, db
 
@@ -34,8 +35,14 @@ def login(email, password):
     return True
 
 
-def logout():
+def logout(token):
     """docstring"""
+    validate_token(token)
+    decoded_token = jwt.decode(token,
+            SECRET,
+            algorithms=['HS256']
+        )
+    destroy_session(decoded_token['session_id'])
     return
 
 
@@ -174,5 +181,12 @@ def validate_token(token):
     session_id = decoded_token['session_id']
 
     # return userid
-    session = Session.query.filter(Session.id == session_id).first()
-    return session.userId
+    try:
+        session = Session.query.filter(Session.id == session_id).first()
+    except sqlalchemy.exc.InterfaceError:
+        raise AccessError
+    return session.userId, session_id
+
+def destroy_session(session_id):
+    delete(Session).where(Session.id == session_id).first()
+    db.commit()
