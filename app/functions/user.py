@@ -52,7 +52,7 @@ def get_data(user_id: int):
         accountinfo.country,
         accountinfo.currency
     ]
-    if any(item == None for item in data):
+    if any(item is None for item in data):
         return make_response(jsonify(user_data), 204)
 
     return user_data
