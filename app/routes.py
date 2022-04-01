@@ -20,8 +20,9 @@ def auth_login():
 
 @app.route("/auth/logout", methods=["POST"])
 def auth_logout():
+    token = request.headers["token"]
     # log a user out of their session (also disconect all api sessions)
-    auth.logout()
+    auth.logout(token)
 
 @app.route("/auth/register", methods=["POST"])
 def auth_register():
