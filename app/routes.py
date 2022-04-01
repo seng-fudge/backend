@@ -1,6 +1,8 @@
 import json
+from os import execv
 from flask import current_app as app, request
 from app.functions import apis, auth, user
+from app.functions.error import InputError, AccessError
 
 @app.route("/", methods = ["GET"])
 def test():
@@ -50,15 +52,22 @@ def apis_disconnect():
 ###############################################
 
 #################### /user ####################
-@app.route("/user/data", methods=["POST", "GET"])
+@app.route("/user/data", methods=["GET","POST"])
 def user_data():
+    token = request.headers["token"]
+    user_id = auth.validate_token(token)
+
     if request.method == "POST":
         # update user data
-        user.update_data()
-        return
+        users_data = request.get_json()
+        try:
+            user.update_data(user_id, users_data)
+        except KeyError as missing_data:
+            raise InputError(description="Json form incomplete") from missing_data
+        return {}
     if request.method == "GET":
         # Get user data
-        user.get_data()
-        return
+        return user.get_data(user_id)
 
+    return {}
 ###############################################

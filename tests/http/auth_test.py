@@ -1,6 +1,5 @@
 import json
-from app import init_app
-test_app = init_app()
+from tests.http.test_app import test_app
 '''
             ========================================================
                             auth register tests

@@ -32,16 +32,16 @@ class Accountdata(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    businessName = Column(Text, nullable=False)
-    contactName = Column(Text, nullable=False)
-    electronicMail = Column(Text, nullable=False)
+    businessName = Column(Text, nullable=True)
+    contactName = Column(Text, nullable=True)
+    electronicMail = Column(Text, nullable=True)
 
-    supplierID = Column(Integer, nullable=False)
-    street = Column(Text, nullable=False)
-    city = Column(Text, nullable=False)
-    postcode = Column(Integer, nullable=False)
-    country = Column(Text, nullable=False)
-    currency = Column(Text, nullable=False)
+    supplierID = Column(Integer, nullable=True)
+    street = Column(Text, nullable=True)
+    city = Column(Text, nullable=True)
+    postcode = Column(Text, nullable=True)
+    country = Column(Text, nullable=True)
+    currency = Column(Text, nullable=True)
 
     userId = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="accountdata")
