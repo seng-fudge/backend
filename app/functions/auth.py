@@ -5,7 +5,7 @@ import jwt
 import sqlalchemy
 from sqlalchemy import delete
 from app.functions.error import AccessError, InputError
-from app.models import Accountdata, Session, User, db
+from app.models import Accountdata, Session, User, Token, db
 
 SECRET = os.environ.get('SECRET')
 
@@ -188,5 +188,12 @@ def validate_token(token):
     return session.userId, session_id
 
 def destroy_session(session_id):
-    delete(Session).where(Session.id == session_id).first()
+    session = Session.query.filter(Session.id == session_id).first()
+    #find tokens linked to session
+    tokens = Token.quert.filter(Token.session == session).all()
+    for token in tokens:
+        db.session.delete(token)
+
+    db.session.delete(session)
+
     db.commit()
