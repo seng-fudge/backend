@@ -93,3 +93,33 @@ def test_working_login():
                         json={"email": "email4@email.com", "password": "Password123"})
         assert resp.status_code == 200
         assert "token" in json.loads(resp.data)
+
+'''
+            ========================================================
+                            auth remove tests
+            ========================================================
+'''
+
+def test_invalid_token_remove():
+    with test_app.test_client() as app:
+        resp = app.post("/auth/remove", headers = {"token", "Wrong token"})
+        assert resp.status_code == 403
+
+def test_working_remove():
+    with test_app.test_client() as app:
+        resp = app.post(
+            "/auth/register", json={"email": "email6@email.com", "password": "Password123"})
+
+        assert resp.status_code == 200
+        
+        data = json.loads(resp.data)
+        
+        resp = app.post("/auth/remove", headers = {"token", data['token']})
+        assert resp.status_code == 200
+        
+        resp = app.post("/auth/remove", headers = {"token", data['token']})
+        assert resp.status_code == 403
+        
+        resp = app.post("/auth/login",
+                        json={"email": "email6@email.com", "password": "Password321"})
+        assert resp.status_code == 400
