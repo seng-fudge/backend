@@ -145,11 +145,11 @@ def remove(user_id):
         for token in tokens:
             db.session.delete(token)
             
-        db.session.delete()
+        db.session.delete(session)
     
     # Remove account data
     
-    datas = Accountdata.query.filter(Accountdata.user_id == user_id).all()
+    datas = Accountdata.query.filter(Accountdata.userId == user_id).all()
     
     for data in datas:
         db.session.delete(data)
@@ -210,4 +210,8 @@ def validate_token(token):
 
     # return userid
     session = Session.query.filter(Session.id == session_id).first()
+    
+    if session == None:
+        raise AccessError(description="Bad Token") # pylint: disable=raise-missing-from
+    
     return session.userId
