@@ -33,8 +33,14 @@ def auth_register():
 
 @app.route("/auth/remove", methods=["DELETE"])
 def auth_remove():
+    
+    token = request.headers["token"]
+    user_id = auth.validate_token(token)
+    
     #delete user account
-    auth.remove()
+    auth.remove(user_id)
+    
+    return json.dumps({})
 
 ###############################################
 
