@@ -4,7 +4,7 @@ import time
 import jwt
 
 from app.functions.error import AccessError, InputError
-from app.models import Accountdata, Session, User, db
+from app.models import Accountdata, Session, User, Token, db
 
 SECRET = os.environ.get('SECRET')
 
@@ -122,10 +122,45 @@ def generate_token(email):
     return {'token' : token}
 
 
-def remove():
-    """docstring"""
-    return
+def remove(user_id):
+    """
+    Remvoes all sessions and tokens linked to user
 
+    Parameters
+    ----------
+    'user_id' - (Integer)
+
+    Returns
+    -------
+    None
+    """
+    
+    # Remove sessions and tokens
+    
+    sessions = Session.query.filter(Session.userId == user_id).all()
+    
+    for session in sessions:
+        tokens = Token.query.filter(Token.session == session).all()
+        
+        for token in tokens:
+            db.session.delete(token)
+            
+        db.session.delete()
+    
+    # Remove account data
+    
+    datas = Accountdata.query.filter(Accountdata.user_id == user_id).all()
+    
+    for data in datas:
+        db.session.delete(data)
+    
+    user = User.query.get(user_id)
+    
+    db.session.delete(user)
+    
+    db.session.commit()
+    
+    
 def validate_email(email):
     """Docstring"""
     email_regex = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$"
