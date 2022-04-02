@@ -1,7 +1,7 @@
-from flask import session
 import requests
 import os
 import json
+from flask import session
 from app.models import Session, User, Token, db
 from app.functions.error import AccessError, ServiceUnavailableError
 
@@ -34,7 +34,8 @@ def disconnect(session_id):
 
 def start_send_session():
     resp = requests.post("https://fudge2021.herokuapp.com/session/start", json={
-                         'username': os.environ.get("SENDUSERNAME"), 'password': os.environ.get("SENDPASSWORD")})
+                         'username': os.environ.get("SENDUSERNAME"),
+                         'password': os.environ.get("SENDPASSWORD")})
 
     if resp.status_code != 200:
         raise ServiceUnavailableError(
@@ -45,7 +46,7 @@ def start_send_session():
 
 def end_send_session(token):
     requests.post("https://fudge2021.herokuapp.com/session/end", json={
-                         'token': token})
+        'token': token})
 
 
 def cleanup_tokens(session_id):
