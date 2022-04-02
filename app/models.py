@@ -7,8 +7,7 @@ class Token(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    send_token = Column(Text, nullable=False)
-    create_token = Column(Text, nullable=False)
+    send_token = Column(Text)
 
     sessionId = Column(Integer, ForeignKey("sessions.id"))
     session = relationship("Session", back_populates="tokens")
