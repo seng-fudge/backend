@@ -1,11 +1,13 @@
 import os
 import re
 import time
+import hashlib
 import jwt
 import sqlalchemy
 from sqlalchemy import delete
 from app.functions.error import AccessError, InputError
 from app.models import Accountdata, Session, User, Token, db
+
 
 SECRET = os.environ.get('SECRET')
 
@@ -27,8 +29,9 @@ def login(email, password):
     Is valid (Token)
     """
 
+    e_password = encrypt_password(password)
     curr_user = User.query.filter(
-        User.email == email, User.password == password).first()
+        User.email == email, User.password == e_password).first()
 
     if curr_user is None:
         raise InputError(description="Invalid email or password")
@@ -84,7 +87,8 @@ def register(email, password):
         raise InputError(description="Password is invalid")
 
     # Create new user
-    new_user = User(email=email, password=password)
+    e_password = encrypt_password(password)
+    new_user = User(email=email, password=e_password)
     new_user_data = Accountdata(
         user=new_user,
         businessName=None,
@@ -242,3 +246,7 @@ def destroy_session(session_id):
     db.session.delete(session)
 
     db.session.commit()
+
+def encrypt_password(password):
+    pw_bytes = password.encode()
+    return hashlib.sha256(pw_bytes).hexdigest()
