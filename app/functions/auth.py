@@ -227,7 +227,6 @@ def validate_token(token):
 
     # return userid
     session = Session.query.filter(Session.id == session_id).first()
-<<<<<<< HEAD
     if session is None:
         raise AccessError(description="no session associated with this token")
 
@@ -243,11 +242,3 @@ def destroy_session(session_id):
     db.session.delete(session)
 
     db.session.commit()
-=======
-
-    if session is None:
-        raise AccessError(
-            description="Bad Token")
-
-    return session.userId
->>>>>>> main
