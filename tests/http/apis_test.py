@@ -25,3 +25,8 @@ def test_connect_working_apis():
         assert resp.status_code == 200
         
         assert "send_token" in json.loads(resp.data)
+        
+        resp = app.post("/apis/disconnect",
+            headers={"token":token})
+        
+        assert resp.status_code == 200
