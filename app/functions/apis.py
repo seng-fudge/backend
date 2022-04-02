@@ -1,6 +1,7 @@
-import requests
 import os
 import json
+import requests
+
 from flask import session
 from app.models import Session, User, Token, db
 from app.functions.error import AccessError, ServiceUnavailableError
