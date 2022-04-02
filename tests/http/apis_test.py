@@ -14,7 +14,7 @@ def test_connect_working_apis():
         token = data["token"]
 
         resp = app.post("/apis/connect",
-            header={"token":token})
+            headers={"token":token})
 
         assert resp.status_code == 200
 
