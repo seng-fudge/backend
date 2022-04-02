@@ -1,12 +1,13 @@
 import os
 import re
 import time
+import hashlib
 import jwt
 import sqlalchemy
 from sqlalchemy import delete
 from app.functions.error import AccessError, InputError
 from app.models import Accountdata, Session, User, Token, db
-import hashlib
+
 
 SECRET = os.environ.get('SECRET')
 
