@@ -2,7 +2,8 @@ import os
 import re
 import time
 import jwt
-
+import sqlalchemy
+from sqlalchemy import delete
 from app.functions.error import AccessError, InputError
 from app.models import Accountdata, Session, User, Token, db
 
@@ -35,9 +36,20 @@ def login(email, password):
     return True
 
 
-def logout():
-    """docstring"""
-    return
+def logout(token):
+    """
+    Logs user out of their session.
+
+    Parameters
+    ----------
+
+    'token' = String
+
+    """
+    _, session = validate_token(token)
+    destroy_session(session)
+
+    return {}
 
 
 def register(email, password):
@@ -215,9 +227,18 @@ def validate_token(token):
 
     # return userid
     session = Session.query.filter(Session.id == session_id).first()
-
     if session is None:
-        raise AccessError(
-            description="Bad Token")
+        raise AccessError(description="no session associated with this token")
 
-    return session.userId
+    return session.userId, session_id
+
+def destroy_session(session_id):
+    session = Session.query.filter(Session.id == session_id).first()
+    #find tokens linked to session
+    tokens = Token.query.filter(Token.session == session).all()
+    for token in tokens:
+        db.session.delete(token)
+
+    db.session.delete(session)
+
+    db.session.commit()

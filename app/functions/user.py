@@ -99,7 +99,7 @@ def update_data(user_id: int, user_data: object):
     """
     good_data(user_data)
     #get user
-    accountinfo = Accountdata.query.filter(Accountdata.userId == user_id).first()
+    accountinfo = Accountdata.query.filter(Accountdata.id == user_id).first()
     accountinfo.businessName = user_data["businessName"]
     accountinfo.contactName = user_data["contactName"]
     accountinfo.electronicMail = user_data["electronicMail"]

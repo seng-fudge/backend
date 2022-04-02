@@ -22,8 +22,10 @@ def auth_login():
 
 @app.route("/auth/logout", methods=["POST"])
 def auth_logout():
+    token = request.headers["token"]
     # log a user out of their session (also disconect all api sessions)
-    auth.logout()
+    auth.logout(token)
+    return {}
 
 
 @app.route("/auth/register", methods=["POST"])
@@ -39,7 +41,7 @@ def auth_register():
 def auth_remove():
 
     token = request.headers["token"]
-    user_id = auth.validate_token(token)
+    user_id, _  = auth.validate_token(token)
 
     # delete user account
     auth.remove(user_id)
@@ -70,7 +72,7 @@ def apis_disconnect():
 @app.route("/user/data", methods=["GET", "POST"])
 def user_data():
     token = request.headers["token"]
-    user_id = auth.validate_token(token)
+    user_id, _ = auth.validate_token(token)
 
     if request.method == "POST":
         # update user data
