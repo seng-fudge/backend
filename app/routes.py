@@ -41,7 +41,7 @@ def auth_register():
 def auth_remove():
 
     token = request.headers["token"]
-    user_id = auth.validate_token(token)
+    user_id, _  = auth.validate_token(token)
 
     # delete user account
     auth.remove(user_id)
