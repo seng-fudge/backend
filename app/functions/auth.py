@@ -6,6 +6,7 @@ import sqlalchemy
 from sqlalchemy import delete
 from app.functions.error import AccessError, InputError
 from app.models import Accountdata, Session, User, Token, db
+import hashlib
 
 SECRET = os.environ.get('SECRET')
 
@@ -246,4 +247,7 @@ def destroy_session(session_id):
     db.session.commit()
 
 def encrypt_password(password):
-    return password
+    plaintext = password.encode()
+    d = hashlib.sha256(plaintext)
+    hash = d.hexdigest()
+    return hash
