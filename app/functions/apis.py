@@ -8,7 +8,19 @@ from app.functions.error import AccessError, ServiceUnavailableError
 
 
 def connect(session_id):
-    """Gets all required tokens for a user"""
+    """
+    Connects user to token for session
+
+    Raises issue if api servers are not working
+
+    Parameters
+    ----------
+    'session_id' - int
+
+    Returns
+    -------
+    {"send_token": (String)}
+    """
 
     send_token = start_send_session()
     cleanup_tokens(session_id)
@@ -21,7 +33,17 @@ def connect(session_id):
 
 
 def disconnect(session_id):
-    """Disconnects all tokens for a user"""
+    """
+    Disconnects session tokens
+
+    Parameters
+    ----------
+    'session_id' - int
+
+    Returns
+    -------
+    None
+    """
     token = Token.query.filter(Token.sessionId == session_id).first()
 
     if token is not None:
@@ -34,6 +56,7 @@ def disconnect(session_id):
 ####### helpers #######
 
 def start_send_session():
+    ''''Gets token for send api'''
     resp = requests.post("https://fudge2021.herokuapp.com/session/start", json={
                          'username': os.environ.get("SENDUSERNAME"),
                          'password': os.environ.get("SENDPASSWORD")})
@@ -46,11 +69,13 @@ def start_send_session():
 
 
 def end_send_session(token):
+    ''''Logsout token for send api'''
     requests.post("https://fudge2021.herokuapp.com/session/end", json={
         'token': token})
 
 
 def cleanup_tokens(session_id):
+    '''Logout and remove all tokens linked to session'''
     old_tokens = Token.query.filter(Token.sessionId == session_id).all()
     for token in old_tokens:
         db.session.delete(token)
