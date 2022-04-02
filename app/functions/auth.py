@@ -28,9 +28,9 @@ def login(email, password):
     Is valid (Token)
     """
 
-    e_password = encrypt_password(User.password)
+    e_password = encrypt_password(password)
     curr_user = User.query.filter(
-        User.email == email, e_password == password).first()
+        User.email == email, User.password == e_password).first()
 
     if curr_user is None:
         raise InputError(description="Invalid email or password")
@@ -247,7 +247,5 @@ def destroy_session(session_id):
     db.session.commit()
 
 def encrypt_password(password):
-    plaintext = password.encode()
-    d = hashlib.sha256(plaintext)
-    hash = d.hexdigest()
-    return hash
+    pw_bytes = password.encode()
+    return hashlib.sha256(pw_bytes).hexdigest()
