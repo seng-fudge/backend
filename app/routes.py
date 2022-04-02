@@ -3,7 +3,6 @@ from os import execv
 from flask import current_app as app, request
 from app.functions import apis, auth, user
 from app.functions.error import InputError, AccessError
-from tests.http.auth_test import test_working_remove
 
 
 @app.route("/", methods=["GET"])
