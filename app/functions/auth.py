@@ -9,6 +9,7 @@ from app.models import Accountdata, Session, User, Token, db
 
 SECRET = os.environ.get('SECRET')
 
+
 def login(email, password):
     """
     Checks if login credentials are valid
@@ -83,23 +84,24 @@ def register(email, password):
         raise InputError(description="Password is invalid")
 
     # Create new user
-    new_user = User(email = email, password = password)
+    new_user = User(email=email, password=password)
     new_user_data = Accountdata(
-        user = new_user,
-        businessName = None,
-        contactName = None,
-        electronicMail = email,
+        user=new_user,
+        businessName=None,
+        contactName=None,
+        electronicMail=email,
 
-        supplierID = None,
-        street = None,
-        city = None,
-        postcode = None,
-        country = None,
-        currency = None
+        supplierID=None,
+        street=None,
+        city=None,
+        postcode=None,
+        country=None,
+        currency=None
     )
     db.session.add(new_user)
     db.session.add(new_user_data)
     db.session.commit()
+
 
 def generate_token(email):
     """
@@ -118,30 +120,66 @@ def generate_token(email):
 
     user = User.query.filter(User.email == email).first()
 
-    new_session = Session(user = user, time = time.time())
+    new_session = Session(user=user, time=time.time())
 
-    new_session = Session(user = user, time = time.time())
+    new_session = Session(user=user, time=time.time())
 
     db.session.add(new_session)
     db.session.commit()
 
     token = jwt.encode(
-        {'email' : user.email, 'session_id' : new_session.id},
+        {'email': user.email, 'session_id': new_session.id},
         SECRET,
         algorithm='HS256'
     )
 
-    return {'token' : token}
+    return {'token': token}
 
 
-def remove():
-    """docstring"""
-    return
+def remove(user_id):
+    """
+    Remvoes all sessions and tokens linked to user
+
+    Parameters
+    ----------
+    'user_id' - (Integer)
+
+    Returns
+    -------
+    None
+    """
+
+    # Remove sessions and tokens
+
+    sessions = Session.query.filter(Session.userId == user_id).all()
+
+    for session in sessions:
+        tokens = Token.query.filter(Token.session == session).all()
+
+        for token in tokens:
+            db.session.delete(token)
+
+        db.session.delete(session)
+
+    # Remove account data
+
+    datas = Accountdata.query.filter(Accountdata.userId == user_id).all()
+
+    for data in datas:
+        db.session.delete(data)
+
+    user = User.query.get(user_id)
+
+    db.session.delete(user)
+
+    db.session.commit()
+
 
 def validate_email(email):
     """Docstring"""
     email_regex = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$"
-    return re.fullmatch(email_regex,email)
+    return re.fullmatch(email_regex, email)
+
 
 def validate_password(password):
     """docstring"""
@@ -158,6 +196,7 @@ def validate_password(password):
         return False
 
     return True
+
 
 def validate_token(token):
     """
@@ -177,16 +216,18 @@ def validate_token(token):
     """
     try:
         decoded_token = jwt.decode(token,
-            SECRET,
-            algorithms=['HS256']
-        )
+                                   SECRET,
+                                   algorithms=['HS256']
+                                   )
     except:
-        raise AccessError(description="Bad Token") # pylint: disable=raise-missing-from
+        raise AccessError(  # pylint: disable=raise-missing-from
+            description="Bad Token")
 
     session_id = decoded_token['session_id']
 
     # return userid
     session = Session.query.filter(Session.id == session_id).first()
+<<<<<<< HEAD
     if session is None:
         raise AccessError(description="no session associated with this token")
 
@@ -202,3 +243,11 @@ def destroy_session(session_id):
     db.session.delete(session)
 
     db.session.commit()
+=======
+
+    if session is None:
+        raise AccessError(
+            description="Bad Token")
+
+    return session.userId
+>>>>>>> main

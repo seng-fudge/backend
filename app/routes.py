@@ -4,7 +4,8 @@ from flask import current_app as app, request
 from app.functions import apis, auth, user
 from app.functions.error import InputError, AccessError
 
-@app.route("/", methods = ["GET"])
+
+@app.route("/", methods=["GET"])
 def test():
     return json.dumps("Backend Online")
 
@@ -18,6 +19,7 @@ def auth_login():
 
     return json.dumps(auth.generate_token(data['email']))
 
+
 @app.route("/auth/logout", methods=["POST"])
 def auth_logout():
     token = request.headers["token"]
@@ -25,26 +27,37 @@ def auth_logout():
     auth.logout(token)
     return {}
 
+
 @app.route("/auth/register", methods=["POST"])
 def auth_register():
     data = request.get_json()
-    #register a user account
+    # register a user account
     auth.register(data['email'], data['password'])
 
     return json.dumps(auth.generate_token(data['email']))
 
+
 @app.route("/auth/remove", methods=["DELETE"])
 def auth_remove():
-    #delete user account
-    auth.remove()
+
+    token = request.headers["token"]
+    user_id = auth.validate_token(token)
+
+    # delete user account
+    auth.remove(user_id)
+
+    return json.dumps({})
 
 ###############################################
 
 #################### /apis ####################
+
+
 @app.route("/apis/connect", methods=["POST"])
 def apis_connect():
     # connect all apis (associated with session)
     apis.connect()
+
 
 @app.route("/apis/disconnect", methods=["POST"])
 def apis_disconnect():
@@ -54,7 +67,9 @@ def apis_disconnect():
 ###############################################
 
 #################### /user ####################
-@app.route("/user/data", methods=["GET","POST"])
+
+
+@app.route("/user/data", methods=["GET", "POST"])
 def user_data():
     token = request.headers["token"]
     user_id, _ = auth.validate_token(token)
@@ -65,7 +80,8 @@ def user_data():
         try:
             user.update_data(user_id, users_data)
         except KeyError as missing_data:
-            raise InputError(description="Json form incomplete") from missing_data
+            raise InputError(
+                description="Json form incomplete") from missing_data
         return {}
     if request.method == "GET":
         # Get user data
