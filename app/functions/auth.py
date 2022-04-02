@@ -36,14 +36,19 @@ def login(email, password):
 
 
 def logout(token):
-    """docstring"""
-    validate_token(token)
-    decoded_token = jwt.decode(token,
-            SECRET,
-            algorithms=['HS256']
-        )
-    destroy_session(decoded_token['session_id'])
-    return
+    """
+    Logs user out of their session.
+
+    Parameters
+    ----------
+
+    'token' = String
+
+    """
+    _, session = validate_token(token)
+    destroy_session(session)
+
+    return {}
 
 
 def register(email, password):
@@ -181,19 +186,19 @@ def validate_token(token):
     session_id = decoded_token['session_id']
 
     # return userid
-    try:
-        session = Session.query.filter(Session.id == session_id).first()
-    except sqlalchemy.exc.InterfaceError:
-        raise AccessError
+    session = Session.query.filter(Session.id == session_id).first()
+    if session is None:
+        raise AccessError(description="no session associated with this token")
+
     return session.userId, session_id
 
 def destroy_session(session_id):
     session = Session.query.filter(Session.id == session_id).first()
     #find tokens linked to session
-    tokens = Token.quert.filter(Token.session == session).all()
+    tokens = Token.query.filter(Token.session == session).all()
     for token in tokens:
         db.session.delete(token)
 
     db.session.delete(session)
 
-    db.commit()
+    db.session.commit()

@@ -100,16 +100,23 @@ def test_working_login():
             ========================================================
 '''
 
+def test_bad_token_logout():
+    with test_app.test_client() as app:
+        resp = app.post(
+            "/auth/logout",
+            headers={"token":"I am totally a token i promise good sir"}
+        )
+        assert resp.status_code == 403
 def test_working_logout():
     with test_app.test_client() as app:
         app.post(
             "/auth/register", json={"email": "email4@email.com", "password": "Password123"}
         )
-        
+
         resp = app.post("/auth/login",
                 json={"email": "email4@email.com", "password": "Password123"})
         assert resp.status_code == 200
-        
+
         data = json.loads(resp.data)
         token = data["token"]
 
@@ -123,4 +130,4 @@ def test_working_logout():
             "/auth/logout",
             headers={"token":token}
         )
-        assert resp.status_code == 200 #this is obviously wrong
+        assert resp.status_code == 403
