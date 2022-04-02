@@ -1,6 +1,12 @@
 import json
 from tests.http.test_app import test_app
 
+def test_conenct_invalid_token_apis():
+    with test_app.test_client() as app:
+        resp = app.post("/apis/connect",
+            headers={"token": "Invalid_token"})
+
+        assert resp.status_code == 403
 
 def test_connect_working_apis():
     with test_app.test_client() as app:
@@ -17,5 +23,5 @@ def test_connect_working_apis():
             headers={"token":token})
 
         assert resp.status_code == 200
-
-
+        
+        assert "send_token" in json.loads(resp.data)

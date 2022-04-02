@@ -1,6 +1,6 @@
 import json
 from os import execv
-from flask import current_app as app, request
+from flask import current_app as app, request, session
 from app.functions import apis, auth, user
 from app.functions.error import InputError, AccessError
 
@@ -56,18 +56,18 @@ def auth_remove():
 @app.route("/apis/connect", methods=["POST"])
 def apis_connect():
     token = request.headers["token"]
-    user_id, _ = auth.validate_token(token)
+    _, session_id = auth.validate_token(token)
     # connect all apis (associated with session)
-    response = apis.connect(user_id)
+    response = apis.connect(session_id)
     return json.dumps(response)
 
 
 @app.route("/apis/disconnect", methods=["POST"])
 def apis_disconnect():
     token = request.headers["token"]
-    user_id, _ = auth.validate_token(token)
+    _, session_id = auth.validate_token(token)
     # disconnect all apis (associated with session)
-    apis.disconnect()
+    apis.disconnect(session_id)
     return {}
 
 ###############################################
