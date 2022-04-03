@@ -7,6 +7,7 @@ import sqlalchemy
 from sqlalchemy import delete
 from app.functions.error import AccessError, InputError
 from app.models import Accountdata, Session, User, Token, db
+from app.functions import apis
 
 
 SECRET = os.environ.get('SECRET')
@@ -158,12 +159,7 @@ def remove(user_id):
     sessions = Session.query.filter(Session.userId == user_id).all()
 
     for session in sessions:
-        tokens = Token.query.filter(Token.session == session).all()
-
-        for token in tokens:
-            db.session.delete(token)
-
-        db.session.delete(session)
+        destroy_session(session.id)
 
     # Remove account data
 
@@ -239,9 +235,7 @@ def validate_token(token):
 def destroy_session(session_id):
     session = Session.query.filter(Session.id == session_id).first()
     #find tokens linked to session
-    tokens = Token.query.filter(Token.session == session).all()
-    for token in tokens:
-        db.session.delete(token)
+    apis.disconnect(session_id)
 
     db.session.delete(session)
 

@@ -10,6 +10,8 @@ jobs:
     env:
       ON_SERVER: ${{ secrets.ON_SERVER }}
       SECRET: ${{ secrets.SECRET }}
+      SENDPASSWORD: ${{ secrets.SENDPASSWORD }}
+      SENDUSERNAME: ${{ secrets.SENDUSERNAME }}
     steps:
     - uses: actions/checkout@v2
 

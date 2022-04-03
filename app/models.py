@@ -2,13 +2,14 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship
 
 from app import db
+
+
 class Token(db.Model):
     __tablename__ = "tokens"
 
     id = Column(Integer, primary_key=True)
 
-    send_token = Column(Text, nullable=False)
-    create_token = Column(Text, nullable=False)
+    send_token = Column(Text, nullable=false)
 
     sessionId = Column(Integer, ForeignKey("sessions.id"))
     session = relationship("Session", back_populates="tokens")
@@ -57,4 +58,5 @@ class User(db.Model):
 
     accountdata = relationship(
         "Accountdata", order_by=Accountdata.id, back_populates="user")
-    sessions = relationship("Session", order_by=Session.id, back_populates="user")
+    sessions = relationship(
+        "Session", order_by=Session.id, back_populates="user")
