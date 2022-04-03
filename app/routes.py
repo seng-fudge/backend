@@ -42,7 +42,7 @@ def auth_register():
 def auth_remove():
 
     token = request.headers["token"]
-    user_id, _  = auth.validate_token(token)
+    user_id, _ = auth.validate_token(token)
 
     # delete user account
     auth.remove(user_id)
@@ -71,13 +71,14 @@ def apis_disconnect():
     apis.disconnect(session_id)
     return {}
 
+
 @app.route("/apis/render_forward", methods=["POST"])
 def apis_render_forward():
     token = request.headers["token"]
     auth.validate_token(token)
-    
+
     data = request.get_json()
-    
+
     return apis.render_cors_forward(data['xml'])
 
 ###############################################

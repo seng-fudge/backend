@@ -6,13 +6,17 @@ from flask import session
 from app.models import Session, User, Token, db
 from app.functions.error import InputError, ServiceUnavailableError
 
+
 def render_cors_forward(xml):
-    resp = requests.post("https://www.invoicerendering.com/einvoices?renderType=html", files={'xml' : xml})
+    resp = requests.post(
+        "https://www.invoicerendering.com/einvoices?renderType=html",
+        files={'xml': xml})
 
     if resp.status_code != 200:
         raise InputError(description=resp.json)
 
     return resp.text
+
 
 def connect(session_id):
     """
