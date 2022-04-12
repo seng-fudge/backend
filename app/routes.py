@@ -1,4 +1,3 @@
-from crypt import methods
 import json
 from os import execv
 from flask import current_app as app, request, session
@@ -116,11 +115,11 @@ def history_customer():
     if request.method == "POST":
         data = request.get_json()
         # Add new customer
-        return history.add_cusomter(data['customer'], user_id)
+        return history.add_customer(data, user_id)
     
     if request.method == "GET":
         # Output list of customers
-        return history.get_customer(data['customer'], user_id)
+        return history.get_customer(user_id)
     
     return {}
 

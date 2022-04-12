@@ -7,7 +7,7 @@ from tests.http.test_app import test_app
             ========================================================
 '''
 
-def invalid_token_customer():
+def test_invalid_token_customer():
     with test_app.test_client() as app:
         resp = app.get("/history/customer",
             headers = {"token": "i promise i am a token"})
@@ -27,7 +27,7 @@ def test_working():
                 'businessName' : "Bobs grocceries",
                 'email' : "email@email.com",
                 'streetAddress' : "21 Street",
-                'additionalStreetAdress' : "",
+                'additionalStreetAddress' : "",
                 'city' : "Sydney",
                 'postcode' : "1234",
                 'country' : "Australia"
@@ -42,6 +42,6 @@ def test_working():
         resp = app.get("/history/customer",
             headers = {"token": token})
 
-        assert resp.status == 200
+        assert resp.status_code == 200
 
         assert customer_details in json.loads(resp.data)['customers']
