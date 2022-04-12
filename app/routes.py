@@ -2,7 +2,7 @@ from crypt import methods
 import json
 from os import execv
 from flask import current_app as app, request, session
-from app.functions import apis, auth, user
+from app.functions import apis, auth, user, history
 from app.functions.error import InputError, AccessError
 
 
@@ -85,7 +85,6 @@ def apis_render_forward():
 
 #################### /user ####################
 
-
 @app.route("/user/data", methods=["GET", "POST"])
 def user_data():
     token = request.headers["token"]
@@ -105,4 +104,24 @@ def user_data():
         return user.get_data(user_id)
 
     return {}
+###############################################
+
+#################### /history ####################
+
+@app.route("/history/customer", methods=["GET","POST"])
+def history_customer():
+    token = request.headers["token"]
+    user_id, _ = auth.validate_token(token)
+
+    if request.method == "POST":
+        data = request.get_json()
+        # Add new customer
+        return history.add_cusomter(data['customer'], user_id)
+    
+    if request.method == "GET":
+        # Output list of customers
+        return history.get_customer(data['customer'], user_id)
+    
+    return {}
+
 ###############################################
