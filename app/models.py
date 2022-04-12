@@ -47,6 +47,23 @@ class Accountdata(db.Model):
     userId = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="accountdata")
 
+class Customer(db.Model):
+    __tablename__ = "customers"
+
+    id = Column(Integer, primary_key=True)
+
+    buyerReference = Column(Text)
+    customerName = Column(Text)
+    businessName = Column(Text)
+    email = Column(Text)
+    streetAddress = Column(Text)
+    additionalStreetAddress = Column(Text)
+    city = Column(Text)
+    postcode = Column(Text)
+    country = Column(Text)
+
+    userId = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="customers")
 
 class User(db.Model):
     __tablename__ = "users"
@@ -60,3 +77,4 @@ class User(db.Model):
         "Accountdata", order_by=Accountdata.id, back_populates="user")
     sessions = relationship(
         "Session", order_by=Session.id, back_populates="user")
+    customers = relationship("Customer", order_by=Customer.id, back_populates="user")
