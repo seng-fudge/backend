@@ -26,7 +26,7 @@ def test_working():
                 'customerName' : "Bob",
                 'businessName' : "Bobs grocceries",
                 'email' : "email@email.com",
-                'streetAdress' : "21 Street",
+                'streetAddress' : "21 Street",
                 'additionalStreetAdress' : "",
                 'city' : "Sydney",
                 'postcode' : "1234",
@@ -44,4 +44,4 @@ def test_working():
 
         assert resp.status == 200
 
-        assert customer_details in json.loads(resp.data)
+        assert customer_details in json.loads(resp.data)['customers']
