@@ -17,6 +17,22 @@ def render_cors_forward(xml):
 
     return resp.text
 
+def render_get_pdf(xml):
+        resp = requests.post(
+        "https://www.invoicerendering.com/einvoices?renderType=pdf",
+        files={'xml': xml})
+
+        return resp.content
+
+def send_email_pdf(session_id, xml_string, pdf_bytestream):
+    token = get_current_token(session_id)
+
+    resp = requests.post(
+        "https://fudge2021.herokuapp.com/invoice/extract_and_send/pdf",
+        files = {'file': bytes(xml_string, 'UTF-8'), "pdf": pdf_bytestream },
+        headers = {"token": token.send_token}
+    )
+    return resp
 
 def connect(session_id):
     """
@@ -90,3 +106,7 @@ def cleanup_tokens(session_id):
     old_tokens = Token.query.filter(Token.sessionId == session_id).all()
     for token in old_tokens:
         db.session.delete(token)
+
+def get_current_token(session_id):
+    token = Token.query.filter(Token.sessionId == session_id).first()
+    return token

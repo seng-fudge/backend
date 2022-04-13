@@ -3,7 +3,7 @@ import json
 from os import execv
 from flask import current_app as app, request, session
 from app.functions import apis, auth, user
-from app.functions.error import InputError, AccessError
+from app.functions.error import InputError, AccessError, ServiceUnavailableError
 
 
 @app.route("/", methods=["GET"])
@@ -80,6 +80,21 @@ def apis_render_forward():
     data = request.get_json()
 
     return apis.render_cors_forward(data['xml'])
+
+
+@app.route("/apis/email_pdf", methods = ['POST'])
+def email_as_pdf():
+    token = request.headers["token"]
+    _, session_id = auth.validate_token(token)
+
+    data = request.get_json()
+    pdf_bytestream = apis.render_get_pdf(data['xml'])
+    resp = apis.send_email_pdf(session_id, data['xml'], pdf_bytestream)
+
+    if resp.status_code == 200:
+        return {}
+    else:
+        raise ServiceUnavailableError
 
 ###############################################
 
