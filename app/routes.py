@@ -94,7 +94,7 @@ def email_as_pdf():
     if resp.status_code == 200:
         return {}
     else:
-        raise ServiceUnavailableError
+        raise ServiceUnavailableError(description= "something wrong with the send email API, email was not sent")
 
 ###############################################
 

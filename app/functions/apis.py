@@ -21,8 +21,10 @@ def render_get_pdf(xml):
         resp = requests.post(
         "https://www.invoicerendering.com/einvoices?renderType=pdf",
         files={'xml': xml})
-
-        return resp.content
+        if resp.status_code == 200:
+            return resp.content
+        else:
+            raise ServiceUnavailableError(description="Something went wront with the PDF renderer, email was not sent")
 
 def send_email_pdf(session_id, xml_string, pdf_bytestream):
     token = get_current_token(session_id)
