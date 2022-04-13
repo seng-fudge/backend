@@ -91,10 +91,12 @@ def email_as_pdf():
     pdf_bytestream = apis.render_get_pdf(data['xml'])
     resp = apis.send_email_pdf(session_id, data['xml'], pdf_bytestream)
 
-    if resp.status_code == 200:
-        return {}
-    else:
-        raise ServiceUnavailableError(description= "something wrong with the send email API, email was not sent")
+    if resp.status_code != 200:
+        raise ServiceUnavailableError(
+            description= "something wrong with the send email API, email was not sent")
+
+    return {}
+
 
 ###############################################
 

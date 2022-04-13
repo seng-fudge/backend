@@ -18,13 +18,14 @@ def render_cors_forward(xml):
     return resp.text
 
 def render_get_pdf(xml):
-        resp = requests.post(
+    resp = requests.post(
         "https://www.invoicerendering.com/einvoices?renderType=pdf",
         files={'xml': xml})
-        if resp.status_code == 200:
-            return resp.content
-        else:
-            raise ServiceUnavailableError(description="Something went wront with the PDF renderer, email was not sent")
+    if resp.status_code != 200:
+        raise ServiceUnavailableError(
+            description="Something went wront with the PDF renderer, email was not sent"
+            )
+    return resp.content
 
 def send_email_pdf(session_id, xml_string, pdf_bytestream):
     token = get_current_token(session_id)

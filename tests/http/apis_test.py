@@ -46,6 +46,9 @@ def test_email_pdf():
             headers={"token":token})
 
         with open('./tests/files/AUInvoice.xml','r') as xml:
-            resp = app.post("/apis/email_pdf", headers={"token":token}, json = {"xml": f"{xml.read()}" })
+            resp = app.post("/apis/email_pdf",
+                headers={"token":token},
+                json = {"xml": f"{xml.read()}" }
+                )
 
         assert resp.status_code == 200
