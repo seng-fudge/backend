@@ -65,6 +65,21 @@ class Customer(db.Model):
     userId = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="customers")
 
+class Payment(db.Model):
+    __tablename__ = "payments"
+
+    id - Column(Integer, primary_key=True)
+
+
+    dueDate = Column(Text)
+    paymentType = Column(Text)
+    paymentId = Column(Text)
+    paymentTerms = Column(Text)
+
+    userId = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="payments")
+
+
 class User(db.Model):
     __tablename__ = "users"
 
@@ -78,3 +93,4 @@ class User(db.Model):
     sessions = relationship(
         "Session", order_by=Session.id, back_populates="user")
     customers = relationship("Customer", order_by=Customer.id, back_populates="user")
+    payments = relationship("Payment", order_by=Payment.id, back_populates = "user")
