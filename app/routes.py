@@ -124,7 +124,7 @@ def history_customer():
     return {}
 
 @app.route("/history/payment", methods=["GET","POST"])
-def history_customer():
+def history_payment():
     token = request.headers["token"]
     user_id, _ = auth.validate_token(token)
 

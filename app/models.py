@@ -68,7 +68,7 @@ class Customer(db.Model):
 class Payment(db.Model):
     __tablename__ = "payments"
 
-    id - Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
 
 
     dueDate = Column(Text)
