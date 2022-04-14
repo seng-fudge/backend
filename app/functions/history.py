@@ -1,6 +1,6 @@
 
 
-from app.models import Customer, User, db
+from app.models import Customer, Payment, User, db
 
 
 def add_customer(customer, user_id):
@@ -34,3 +34,29 @@ def get_customer(user_id):
         })
 
     return {'customers': customers}
+
+def add_payment(payment, user_id):
+
+    payment_store = Payment(dueDate = payment['dueDate'], paymentType = payment['paymentType'], paymentId = payment['paymentId'], paymentTerms = payment['paymentTerms'], userId = user_id)
+
+    db.session.add(payment_store)
+    db.session.commit()
+
+    return {}
+
+
+def get_payment(user_id):
+
+    user = User.query.get(user_id)
+
+    payments = []
+
+    for payment in user.payments:
+        payments.append({
+            'dueDate' : payment.dueDate,
+            'paymentType' : payment.paymentType,
+            'paymentId' : payment.paymentId,
+            'paymentTerms' : payment.paymentTerms
+        })
+
+    return {'payments': payments}

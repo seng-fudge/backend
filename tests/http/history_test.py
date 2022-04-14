@@ -7,14 +7,14 @@ from tests.http.test_app import test_app
             ========================================================
 '''
 
-def test_invalid_token_customer():
+def test_invalid_token_customer_customer():
     with test_app.test_client() as app:
         resp = app.get("/history/customer",
             headers = {"token": "i promise i am a token"})
 
         assert resp.status_code == 403
 
-def test_working():
+def test_working_customer():
     with test_app.test_client() as app:
         resp = app.post("/auth/register",
                         json={"email": "testemailcustomer@email.com", "password": "Password123"})
@@ -53,14 +53,14 @@ def test_working():
             ========================================================
 '''
 
-def test_invalid_token_customer():
+def test_invalid_token_customer_payment():
     with test_app.test_client() as app:
         resp = app.get("/history/payment",
             headers = {"token": "i promise i am a token"})
 
         assert resp.status_code == 403
 
-def test_working():
+def test_working_payment():
     with test_app.test_client() as app:
         resp = app.post("/auth/register",
                         json={"email": "testemailcustomer2312@email.com", "password": "Password123"})
@@ -73,7 +73,6 @@ def test_working():
             'paymentId' : "Something idk",
             'paymentTerms' : "You must pay me or else"
         }
-            }
 
         resp = app.post("/history/payment",
             headers = {"token": token},
@@ -86,4 +85,4 @@ def test_working():
 
         assert resp.status_code == 200
 
-        assert payment_details in json.loads(resp.data)['customers']
+        assert payment_details in json.loads(resp.data)['payments']
