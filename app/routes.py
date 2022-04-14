@@ -123,4 +123,21 @@ def history_customer():
     
     return {}
 
+@app.route("/history/payment", methods=["GET","POST"])
+def history_customer():
+    token = request.headers["token"]
+    user_id, _ = auth.validate_token(token)
+
+    if request.method == "POST":
+        data = request.get_json()
+        # Add new customer
+        return history.add_payment(data, user_id)
+    
+    if request.method == "GET":
+        # Output list of customers
+        return history.get_payment(user_id)
+    
+    return {}
+
+
 ###############################################
