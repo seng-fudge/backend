@@ -111,10 +111,16 @@ def user_sent_invoice():
     token = request.headers["token"]
     user_id, _ = auth.validate_token(token)
 
+    data = request.get_json()
+
+    user.add_invoice_to_history(user_id, data['xml'])
+
 @app.route("/user/invoice_history", methods = ["GET"])
 def user_request_invoices():
     token = request.headers["token"]
     user_id, _ = auth.validate_token(token)
+
+    user.get_invoice_history(user_id)
 
 
 ###############################################

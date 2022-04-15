@@ -1,7 +1,12 @@
 import re
+import time
+import defusedxml.ElementTree as xmltree
 from flask import jsonify, make_response
 from app.functions.error import AccessError, InputError
-from app.models import Accountdata, db
+from app.models import Accountdata, User, HistoricInvoice, db
+
+NAMESPACE = {'cac': 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+    'cbc':'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'}
 
 def get_data(user_id: int):
     """
@@ -111,6 +116,26 @@ def update_data(user_id: int, user_data: object):
     accountinfo.currency = user_data["currency"]
     db.session.commit()
 
+def add_invoice_to_history(user_id, xml):
+    user = User.query.filter(User.id == user_id).first()
+    invoice = extract_from_ubl(xml)
+
+    new_invoice = HistoricInvoice(
+        user=user,
+        time=time.time(),
+        recipient=invoice['cust_name'],
+        email=invoice['cust_email'],
+        due=invoice['due_date']
+        )
+
+    db.session.add(new_invoice)
+    db.session.commit()
+    return
+
+def get_invoice_history(user_id):
+    invoices = HistoricInvoice.query.filter(User.id == user_id).all()
+    return invoices
+
 def good_data(user_data: object):
 
     if not isinstance(user_data["businessName"], str):
@@ -144,9 +169,31 @@ def good_data(user_data: object):
     if not re.fullmatch(email_regex, user_data["electronicMail"]):
         raise InputError(description="Email is invalid")
 
+def extract_from_ubl(xml: str):
+    """
+    Extracts customer Name, email and invoice due date.
+    Parameters
+    ----------
+    xml : string
+        an `XML` formatted with ``PEPPOL BIS Billing 3.0 standard``
+    Returns
+    -------
+    ``
+    {
+        'cust_name' : '<Customer Name>',
+        'cust_email': '<Customer@email>',
+        'due_date' : '<duedate>'
+    }
+    ``
+    """
+    invoice = xmltree.fromstring(xml)
 
-def add_invoice_to_history():
-    blah blah
+    cusParty = invoice.find('cac:AccountingCustomerParty',NAMESPACE)        #finds the customer
+    customer = cusParty.find('cac:Party',NAMESPACE)                         #enters the customer party info
+    continfo = customer.find('cac:Contact',NAMESPACE)                       #finds the child element cac:Contact
 
-def get_invoice_history():
-    do T
+    return {
+        "cust_name": continfo.find('cbc:Name',NAMESPACE).text,
+        "cust_email": continfo.find('cbc:ElectronicMail',NAMESPACE).text,
+        "due_date": invoice.find('cbc:DueDate',NAMESPACE).text
+    }
