@@ -131,7 +131,6 @@ def add_invoice_to_history(user_id, xml):
 
     db.session.add(new_invoice)
     db.session.commit()
-    return
 
 def get_invoice_history(user_id):
     invoices = HistoricInvoice.query.filter(HistoricInvoice.userId == user_id).all()
@@ -198,9 +197,9 @@ def extract_from_ubl(xml: str):
     """
     invoice = xmltree.fromstring(xml)
 
-    cusParty = invoice.find('cac:AccountingCustomerParty',NAMESPACE)        #finds the customer
-    customer = cusParty.find('cac:Party',NAMESPACE)                         #enters the customer party info
-    continfo = customer.find('cac:Contact',NAMESPACE)                       #finds the child element cac:Contact
+    cus_party = invoice.find('cac:AccountingCustomerParty',NAMESPACE)
+    customer = cus_party.find('cac:Party',NAMESPACE)
+    continfo = customer.find('cac:Contact',NAMESPACE)
 
     return {
         "cust_name": continfo.find('cbc:Name',NAMESPACE).text,
