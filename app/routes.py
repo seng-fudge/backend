@@ -105,4 +105,16 @@ def user_data():
         return user.get_data(user_id)
 
     return {}
+
+@app.route("/user/sent_invoice", methods = ["POST"])
+def user_sent_invoice():
+    token = request.headers["token"]
+    user_id, _ = auth.validate_token(token)
+
+@app.route("/user/invoice_history", methods = ["GET"])
+def user_request_invoices():
+    token = request.headers["token"]
+    user_id, _ = auth.validate_token(token)
+
+
 ###############################################
