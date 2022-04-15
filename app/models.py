@@ -48,6 +48,19 @@ class Accountdata(db.Model):
     user = relationship("User", back_populates="accountdata")
 
 
+class HistoricInvoice(db.Model):
+    __tablename__ = "historicinvoices"
+
+    id = Column(Integer, primary_key=True)
+
+    recipient = Column(Text, nullable=False)
+    email = Column(Text, nullable=False)
+    time = Column(Integer, nullable=False)
+    due = Column(Text, nullable=False)
+
+    userId = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="historicinvoices")
+
 class User(db.Model):
     __tablename__ = "users"
 
@@ -60,3 +73,5 @@ class User(db.Model):
         "Accountdata", order_by=Accountdata.id, back_populates="user")
     sessions = relationship(
         "Session", order_by=Session.id, back_populates="user")
+    historicinvoices = relationship(
+        "HistoricInvoice", order_by=HistoricInvoice.id, back_populates="user")
