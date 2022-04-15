@@ -93,7 +93,7 @@ def email_as_pdf():
 
     if resp.status_code != 200:
         raise ServiceUnavailableError(
-            description= "something wrong with the send email API, email was not sent")
+            description= f" {resp.status_code} something wrong with the send email API, email was not sent")
 
     return {}
 
@@ -131,13 +131,14 @@ def user_sent_invoice():
     data = request.get_json()
 
     user.add_invoice_to_history(user_id, data['xml'])
+    return {}
 
 @app.route("/user/invoice_history", methods = ["GET"])
 def user_request_invoices():
     token = request.headers["token"]
     user_id, _ = auth.validate_token(token)
 
-    user.get_invoice_history(user_id)
+    return json.dumps(user.get_invoice_history(user_id))
 
 
 ###############################################

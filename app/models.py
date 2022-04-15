@@ -49,7 +49,7 @@ class Accountdata(db.Model):
 
 
 class HistoricInvoice(db.Model):
-    __tablename__ = 'historicinvoices'
+    __tablename__ = "historicinvoices"
 
     id = Column(Integer, primary_key=True)
 
@@ -59,7 +59,7 @@ class HistoricInvoice(db.Model):
     due = Column(Text, nullable=False)
 
     userId = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="historicInvoices")
+    user = relationship("User", back_populates="historicinvoices")
 
 class User(db.Model):
     __tablename__ = "users"
@@ -74,4 +74,4 @@ class User(db.Model):
     sessions = relationship(
         "Session", order_by=Session.id, back_populates="user")
     historicinvoices = relationship(
-        "HistoricInvoice", order_by=HistoricInvoice.id, backpopulates="user")
+        "HistoricInvoice", order_by=HistoricInvoice.id, back_populates="user")

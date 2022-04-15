@@ -1,5 +1,6 @@
+import email
 import re
-import time
+from datetime import datetime
 import defusedxml.ElementTree as xmltree
 from flask import jsonify, make_response
 from app.functions.error import AccessError, InputError
@@ -122,7 +123,7 @@ def add_invoice_to_history(user_id, xml):
 
     new_invoice = HistoricInvoice(
         user=user,
-        time=time.time(),
+        time=datetime.now(),
         recipient=invoice['cust_name'],
         email=invoice['cust_email'],
         due=invoice['due_date']
@@ -133,8 +134,17 @@ def add_invoice_to_history(user_id, xml):
     return
 
 def get_invoice_history(user_id):
-    invoices = HistoricInvoice.query.filter(User.id == user_id).all()
-    return invoices
+    invoices = HistoricInvoice.query.filter(HistoricInvoice.userId == user_id).all()
+    invoices_arr = []
+
+    for invoice in invoices:
+        invoices_arr.append({
+            "recipient": invoice.recipient,
+            "email": invoice.email,
+            "time": invoice.time,
+            "due": invoice.due
+        })
+    return invoices_arr
 
 def good_data(user_data: object):
 

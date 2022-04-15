@@ -241,6 +241,13 @@ def test_invoice_history():
         data = json.loads(resp.data)
         token = data["token"]
 
-        resp = app.post("/user/sent_invoice",
-            headers={"token":token},
-            )
+        with open('./tests/files/AUInvoice.xml','r') as xml:
+            resp = app.post("/user/sent_invoice",
+                headers={"token":token},
+                json = {"xml": f"{xml.read()}"}
+                )
+            assert resp.status_code == 200
+            resp = app.get("/user/invoice_history",
+                headers={"token":token}
+                )
+            assert resp.status_code == 200
