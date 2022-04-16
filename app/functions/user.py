@@ -123,7 +123,7 @@ def add_invoice_to_history(user_id, xml):
 
     new_invoice = HistoricInvoice(
         user=user,
-        time=datetime.now(),
+        time= datetime.timestamp(datetime.now()),
         recipient=invoice['cust_name'],
         email=invoice['cust_email'],
         due=invoice['due_date']
@@ -143,7 +143,7 @@ def get_invoice_history(user_id):
             "time": invoice.time,
             "due": invoice.due
         })
-    return invoices_arr
+    return {"history" : invoices_arr}
 
 def good_data(user_data: object):
 
