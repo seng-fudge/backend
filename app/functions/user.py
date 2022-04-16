@@ -143,7 +143,7 @@ def get_invoice_history(user_id):
             "time": invoice.time,
             "due": invoice.due
         })
-    return invoices_arr
+    return {"history" : invoices_arr}
 
 def good_data(user_data: object):
 
