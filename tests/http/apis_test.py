@@ -33,10 +33,10 @@ def test_connect_working_apis():
 
 def test_email_pdf():
     with test_app.test_client() as app:
-        app.post("/auth/register", json={"email": "email4@email.com", "password": "Password123"})
+        app.post("/auth/register", json={"email": "email100@email.com", "password": "Password123"})
 
         resp = app.post("/auth/login",
-                        json={"email": "email4@email.com", "password": "Password123"})
+                        json={"email": "email100@email.com", "password": "Password123"})
         assert resp.status_code == 200
 
         data = json.loads(resp.data)
