@@ -123,7 +123,7 @@ def add_invoice_to_history(user_id, xml):
 
     new_invoice = HistoricInvoice(
         user=user,
-        time=datetime.now(),
+        time= datetime.timestamp(datetime.now()),
         recipient=invoice['cust_name'],
         email=invoice['cust_email'],
         due=invoice['due_date']
