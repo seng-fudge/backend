@@ -79,6 +79,20 @@ class Payment(db.Model):
     userId = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="payments")
 
+class Product(db.Model):
+    __tablename__ = "products"
+
+    id = Column(Integer, primary_key=True)
+
+    invoiceId = Column(Integer)
+    invoiceQuantity = Column(Integer)
+    invoiceLineExtension = Column(Integer)
+    invoiceName = Column(Text)
+    invoicePriceAmount = Column(Integer)
+    invoiceBaseQuantity = Column(Integer)    
+
+    userId = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="products")
 
 class User(db.Model):
     __tablename__ = "users"
@@ -94,3 +108,4 @@ class User(db.Model):
         "Session", order_by=Session.id, back_populates="user")
     customers = relationship("Customer", order_by=Customer.id, back_populates="user")
     payments = relationship("Payment", order_by=Payment.id, back_populates = "user")
+    products = relationship("Product", order_by=Product.id, back_populates = "user")

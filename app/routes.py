@@ -139,5 +139,21 @@ def history_payment():
     
     return {}
 
+@app.route("/history/product", methods=["GET","POST"])
+def history_product():
+    token = request.headers["token"]
+    user_id, _ = auth.validate_token(token)
+
+    if request.method == "POST":
+        data = request.get_json()
+        # Add new customer
+        return history.add_product(data, user_id)
+    
+    if request.method == "GET":
+        # Output list of customers
+        return history.get_product(user_id)
+    
+    return {}
+
 
 ###############################################

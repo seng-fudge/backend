@@ -1,6 +1,6 @@
 
 
-from app.models import Customer, Payment, User, db
+from app.models import Customer, Payment, Product, User, db
 
 
 def add_customer(customer, user_id):
@@ -35,9 +35,11 @@ def get_customer(user_id):
 
     return {'customers': customers}
 
+
 def add_payment(payment, user_id):
 
-    payment_store = Payment(dueDate = payment['dueDate'], paymentType = payment['paymentType'], paymentId = payment['paymentId'], paymentTerms = payment['paymentTerms'], userId = user_id)
+    payment_store = Payment(dueDate=payment['dueDate'], paymentType=payment['paymentType'],
+                            paymentId=payment['paymentId'], paymentTerms=payment['paymentTerms'], userId=user_id)
 
     db.session.add(payment_store)
     db.session.commit()
@@ -53,10 +55,40 @@ def get_payment(user_id):
 
     for payment in user.payments:
         payments.append({
-            'dueDate' : payment.dueDate,
-            'paymentType' : payment.paymentType,
-            'paymentId' : payment.paymentId,
-            'paymentTerms' : payment.paymentTerms
+            'dueDate': payment.dueDate,
+            'paymentType': payment.paymentType,
+            'paymentId': payment.paymentId,
+            'paymentTerms': payment.paymentTerms
         })
 
     return {'payments': payments}
+
+
+def add_product(product, user_id):
+
+    product_store = Product(invoiceId=product['invoiceId'], invoiceQuantity=product['invoiceQuantity'], invoiceLineExtension=product['invoiceLineExtension'],
+                            invoiceName=product['invoiceName'], invoicePriceAmount=product['invoicePriceAmount'], invoiceBaseQuantity=product['invoiceBaseQuantity'], userId=user_id)
+
+    db.session.add(product_store)
+    db.session.commit()
+
+    return {}
+
+
+def get_product(user_id):
+
+    user = User.query.get(user_id)
+
+    products = []
+
+    for product in user.products:
+        products.append({
+            'invoiceId': product.invoiceId,
+            'invoiceQuantity': product.invoiceQuantity,
+            'invoiceLineExtension': product.invoiceLineExtension,
+            'invoiceName': product.invoiceName,
+            'invoicePriceAmount': product.invoicePriceAmount,
+            'invoiceBaseQuantity': product.invoiceBaseQuantity,
+        })
+
+    return {'products': products}
