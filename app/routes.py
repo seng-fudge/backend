@@ -1,9 +1,8 @@
-from crypt import methods
 import json
 from os import execv
 from flask import current_app as app, request, session
-from app.functions import apis, auth, user
-from app.functions.error import InputError, AccessError, ServiceUnavailableError
+from app.functions import apis, auth, user, history
+from app.functions.error import InputError, ServiceUnavailableError
 
 
 @app.route("/", methods=["GET"])
@@ -102,7 +101,6 @@ def email_as_pdf():
 
 #################### /user ####################
 
-
 @app.route("/user/data", methods=["GET", "POST"])
 def user_data():
     token = request.headers["token"]
@@ -139,6 +137,59 @@ def user_request_invoices():
     user_id, _ = auth.validate_token(token)
 
     return json.dumps(user.get_invoice_history(user_id))
+
+
+###############################################
+
+#################### /history ####################
+
+@app.route("/history/customer", methods=["GET","POST"])
+def history_customer():
+    token = request.headers["token"]
+    user_id, _ = auth.validate_token(token)
+
+    if request.method == "POST":
+        data = request.get_json()
+        # Add new customer
+        return history.add_customer(data, user_id)
+
+    if request.method == "GET":
+        # Output list of customers
+        return history.get_customer(user_id)
+
+    return {}
+
+@app.route("/history/payment", methods=["GET","POST"])
+def history_payment():
+    token = request.headers["token"]
+    user_id, _ = auth.validate_token(token)
+
+    if request.method == "POST":
+        data = request.get_json()
+        # Add new customer
+        return history.add_payment(data, user_id)
+
+    if request.method == "GET":
+        # Output list of customers
+        return history.get_payment(user_id)
+
+    return {}
+
+@app.route("/history/product", methods=["GET","POST"])
+def history_product():
+    token = request.headers["token"]
+    user_id, _ = auth.validate_token(token)
+
+    if request.method == "POST":
+        data = request.get_json()
+        # Add new customer
+        return history.add_product(data, user_id)
+
+    if request.method == "GET":
+        # Output list of customers
+        return history.get_product(user_id)
+
+    return {}
 
 
 ###############################################

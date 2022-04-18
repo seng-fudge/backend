@@ -47,6 +47,52 @@ class Accountdata(db.Model):
     userId = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="accountdata")
 
+class Customer(db.Model):
+    __tablename__ = "customers"
+
+    id = Column(Integer, primary_key=True)
+
+    buyerReference = Column(Text)
+    customerName = Column(Text)
+    businessName = Column(Text)
+    email = Column(Text)
+    streetAddress = Column(Text)
+    additionalStreetAddress = Column(Text)
+    city = Column(Text)
+    postcode = Column(Text)
+    country = Column(Text)
+
+    userId = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="customers")
+
+class Payment(db.Model):
+    __tablename__ = "payments"
+
+    id = Column(Integer, primary_key=True)
+
+
+    dueDate = Column(Text)
+    paymentType = Column(Text)
+    paymentId = Column(Text)
+    paymentTerms = Column(Text)
+
+    userId = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="payments")
+
+class Product(db.Model):
+    __tablename__ = "products"
+
+    id = Column(Integer, primary_key=True)
+
+    invoiceId = Column(Integer)
+    invoiceQuantity = Column(Integer)
+    invoiceLineExtension = Column(Integer)
+    invoiceName = Column(Text)
+    invoicePriceAmount = Column(Integer)
+    invoiceBaseQuantity = Column(Integer)
+
+    userId = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="products")
 
 class HistoricInvoice(db.Model):
     __tablename__ = "historicinvoices"
@@ -73,5 +119,8 @@ class User(db.Model):
         "Accountdata", order_by=Accountdata.id, back_populates="user")
     sessions = relationship(
         "Session", order_by=Session.id, back_populates="user")
+    customers = relationship("Customer", order_by=Customer.id, back_populates="user")
+    payments = relationship("Payment", order_by=Payment.id, back_populates = "user")
+    products = relationship("Product", order_by=Product.id, back_populates = "user")
     historicinvoices = relationship(
         "HistoricInvoice", order_by=HistoricInvoice.id, back_populates="user")
