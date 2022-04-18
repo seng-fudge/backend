@@ -2,7 +2,7 @@ import json
 from os import execv
 from flask import current_app as app, request, session
 from app.functions import apis, auth, user, history
-from app.functions.error import InputError, AccessError
+from app.functions.error import InputError, ServiceUnavailableError
 
 
 @app.route("/", methods=["GET"])
@@ -80,6 +80,23 @@ def apis_render_forward():
 
     return apis.render_cors_forward(data['xml'])
 
+
+@app.route("/apis/email_pdf", methods = ['POST'])
+def email_as_pdf():
+    token = request.headers["token"]
+    _, session_id = auth.validate_token(token)
+
+    data = request.get_json()
+    pdf_bytestream = apis.render_get_pdf(data['xml'])
+    resp = apis.send_email_pdf(session_id, data['xml'], pdf_bytestream)
+
+    if resp.status_code != 200:
+        raise ServiceUnavailableError(
+            description = "something wrong with the send email API, email was not sent")
+
+    return {}
+
+
 ###############################################
 
 #################### /user ####################
@@ -103,6 +120,25 @@ def user_data():
         return user.get_data(user_id)
 
     return {}
+
+@app.route("/user/sent_invoice", methods = ["POST"])
+def user_sent_invoice():
+    token = request.headers["token"]
+    user_id, _ = auth.validate_token(token)
+
+    data = request.get_json()
+
+    user.add_invoice_to_history(user_id, data['xml'])
+    return {}
+
+@app.route("/user/invoice_history", methods = ["GET"])
+def user_request_invoices():
+    token = request.headers["token"]
+    user_id, _ = auth.validate_token(token)
+
+    return json.dumps(user.get_invoice_history(user_id))
+
+
 ###############################################
 
 #################### /history ####################

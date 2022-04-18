@@ -1,7 +1,13 @@
+import email
 import re
+from datetime import datetime
+import defusedxml.ElementTree as xmltree
 from flask import jsonify, make_response
 from app.functions.error import AccessError, InputError
-from app.models import Accountdata, db
+from app.models import Accountdata, User, HistoricInvoice, db
+
+NAMESPACE = {'cac': 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
+    'cbc':'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'}
 
 def get_data(user_id: int):
     """
@@ -111,6 +117,34 @@ def update_data(user_id: int, user_data: object):
     accountinfo.currency = user_data["currency"]
     db.session.commit()
 
+def add_invoice_to_history(user_id, xml):
+    user = User.query.filter(User.id == user_id).first()
+    invoice = extract_from_ubl(xml)
+
+    new_invoice = HistoricInvoice(
+        user=user,
+        time= datetime.timestamp(datetime.now()),
+        recipient=invoice['cust_name'],
+        email=invoice['cust_email'],
+        due=invoice['due_date']
+        )
+
+    db.session.add(new_invoice)
+    db.session.commit()
+
+def get_invoice_history(user_id):
+    invoices = HistoricInvoice.query.filter(HistoricInvoice.userId == user_id).all()
+    invoices_arr = []
+
+    for invoice in invoices:
+        invoices_arr.append({
+            "recipient": invoice.recipient,
+            "email": invoice.email,
+            "time": invoice.time,
+            "due": invoice.due
+        })
+    return {"history" : invoices_arr}
+
 def good_data(user_data: object):
 
     if not isinstance(user_data["businessName"], str):
@@ -143,3 +177,32 @@ def good_data(user_data: object):
     email_regex = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$"
     if not re.fullmatch(email_regex, user_data["electronicMail"]):
         raise InputError(description="Email is invalid")
+
+def extract_from_ubl(xml: str):
+    """
+    Extracts customer Name, email and invoice due date.
+    Parameters
+    ----------
+    xml : string
+        an `XML` formatted with ``PEPPOL BIS Billing 3.0 standard``
+    Returns
+    -------
+    ``
+    {
+        'cust_name' : '<Customer Name>',
+        'cust_email': '<Customer@email>',
+        'due_date' : '<duedate>'
+    }
+    ``
+    """
+    invoice = xmltree.fromstring(xml)
+
+    cus_party = invoice.find('cac:AccountingCustomerParty',NAMESPACE)
+    customer = cus_party.find('cac:Party',NAMESPACE)
+    continfo = customer.find('cac:Contact',NAMESPACE)
+
+    return {
+        "cust_name": continfo.find('cbc:Name',NAMESPACE).text,
+        "cust_email": continfo.find('cbc:ElectronicMail',NAMESPACE).text,
+        "due_date": invoice.find('cbc:DueDate',NAMESPACE).text
+    }

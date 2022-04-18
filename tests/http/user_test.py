@@ -29,10 +29,10 @@ def test_working_get_user_data():
         resp = app.post("/auth/login",
                 json={"email": "email4@email.com", "password": "Password123"})
         assert resp.status_code == 200
-        
+
         data = json.loads(resp.data)
         token = data["token"]
-        
+
         sent_data = {
                 "businessName" : "Fudge",
                 "contactName" : "Some Guy",
@@ -233,3 +233,21 @@ def test_all_types_bad_data_post_user_data():
         assert resp.status_code == 400
         sent_data["currency"] = "AUD"
 
+def test_invoice_history():
+     with test_app.test_client() as app:
+        resp = app.post("/auth/login",
+                json={"email": "email4@email.com", "password": "Password123"})
+        assert resp.status_code == 200
+        data = json.loads(resp.data)
+        token = data["token"]
+
+        with open('./tests/files/AUInvoice.xml','r') as xml:
+            resp = app.post("/user/sent_invoice",
+                headers={"token":token},
+                json = {"xml": f"{xml.read()}"}
+                )
+            assert resp.status_code == 200
+            resp = app.get("/user/invoice_history",
+                headers={"token":token}
+                )
+            assert resp.status_code == 200

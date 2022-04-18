@@ -94,6 +94,19 @@ class Product(db.Model):
     userId = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="products")
 
+class HistoricInvoice(db.Model):
+    __tablename__ = "historicinvoices"
+
+    id = Column(Integer, primary_key=True)
+
+    recipient = Column(Text, nullable=False)
+    email = Column(Text, nullable=False)
+    time = Column(Integer, nullable=False)
+    due = Column(Text, nullable=False)
+
+    userId = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="historicinvoices")
+
 class User(db.Model):
     __tablename__ = "users"
 
@@ -109,3 +122,5 @@ class User(db.Model):
     customers = relationship("Customer", order_by=Customer.id, back_populates="user")
     payments = relationship("Payment", order_by=Payment.id, back_populates = "user")
     products = relationship("Product", order_by=Product.id, back_populates = "user")
+    historicinvoices = relationship(
+        "HistoricInvoice", order_by=HistoricInvoice.id, back_populates="user")
