@@ -156,7 +156,7 @@ def history_customer():
     if request.method == "GET":
         # Output list of customers
         return history.get_customer(user_id)
-    
+
     return {}
 
 @app.route("/history/payment", methods=["GET","POST"])
