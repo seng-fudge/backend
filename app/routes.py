@@ -152,7 +152,7 @@ def history_customer():
         data = request.get_json()
         # Add new customer
         return history.add_customer(data, user_id)
-    
+
     if request.method == "GET":
         # Output list of customers
         return history.get_customer(user_id)
@@ -168,11 +168,11 @@ def history_payment():
         data = request.get_json()
         # Add new customer
         return history.add_payment(data, user_id)
-    
+
     if request.method == "GET":
         # Output list of customers
         return history.get_payment(user_id)
-    
+
     return {}
 
 @app.route("/history/product", methods=["GET","POST"])
@@ -184,11 +184,11 @@ def history_product():
         data = request.get_json()
         # Add new customer
         return history.add_product(data, user_id)
-    
+
     if request.method == "GET":
         # Output list of customers
         return history.get_product(user_id)
-    
+
     return {}
 
 

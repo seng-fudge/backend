@@ -89,7 +89,7 @@ class Product(db.Model):
     invoiceLineExtension = Column(Integer)
     invoiceName = Column(Text)
     invoicePriceAmount = Column(Integer)
-    invoiceBaseQuantity = Column(Integer)    
+    invoiceBaseQuantity = Column(Integer)
 
     userId = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="products")
