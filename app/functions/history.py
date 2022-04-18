@@ -47,7 +47,7 @@ def add_payment(payment, user_id):
     payment_store = Payment(dueDate=payment['dueDate'],
                             paymentType=payment['paymentType'],
                             paymentId=payment['paymentId'],
-                            paymentTerms=payment['paymentTerms']
+                            paymentTerms=payment['paymentTerms'],
                             userId=user_id)
 
     db.session.add(payment_store)
