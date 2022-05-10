@@ -133,7 +133,7 @@ def add_invoice_to_history(user_id, xml):
     db.session.commit()
 
 def get_invoice_history(user_id):
-    invoices = HistoricInvoice.query.filter(HistoricInvoice.userId == user_id).all()
+    invoices = HistoricInvoice.query.filter(HistoricInvoice.userId == user_id).order_by(HistoricInvoice.time.desc())
     invoices_arr = []
 
     for invoice in invoices:
