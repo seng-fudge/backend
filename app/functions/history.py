@@ -14,6 +14,11 @@ def add_customer(customer, user_id):
                               city=customer['city'], postcode=customer['postcode'],
                               country=customer['country'], userId=user_id)
 
+    savedAlready = Customer.query.filter(Customer.userId == user_id, Customer.buyerReference == customer['buyerReference']).all();
+    
+    for curr in savedAlready:
+        db.session.delete(curr);
+
     db.session.add(customer_store)
     db.session.commit()
 
