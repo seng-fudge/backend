@@ -49,7 +49,7 @@ def get_customer(user_id):
     return {'customers': customers}
 
 def get_reference(customer):
-    return customer['buyerRefernce']
+    return customer['buyerReference']
 
 
 def add_payment(payment, user_id):
