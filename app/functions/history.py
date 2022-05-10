@@ -14,10 +14,10 @@ def add_customer(customer, user_id):
                               city=customer['city'], postcode=customer['postcode'],
                               country=customer['country'], userId=user_id)
 
-    savedAlready = Customer.query.filter(
+    saved_already = Customer.query.filter(
         Customer.userId == user_id, Customer.buyerReference == customer['buyerReference']).all()
 
-    for curr in savedAlready:
+    for curr in saved_already:
         db.session.delete(curr)
 
     db.session.add(customer_store)
@@ -62,9 +62,9 @@ def add_payment(payment, user_id):
                             paymentTerms=payment['paymentTerms'],
                             userId=user_id)
 
-    savedPayments = Payment.query.filter(
+    saved_payments = Payment.query.filter(
         Payment.userId == user_id, Payment.paymentId == payment['paymentId']).all()
-    for curr in savedPayments:
+    for curr in saved_payments:
         db.session.delete(curr)
 
     db.session.add(payment_store)
@@ -87,12 +87,12 @@ def get_payment(user_id):
             'paymentTerms': payment.paymentTerms
         })
 
-    payments.sort(key=get_paymentId)
+    payments.sort(key=get_payment_id)
 
     return {'payments': payments}
 
 
-def get_paymentId(payment):
+def get_payment_id(payment):
     return payment['paymentId']
 
 
@@ -106,9 +106,9 @@ def add_product(product, user_id):
                             invoiceBaseQuantity=product['invoiceBaseQuantity'],
                             userId=user_id)
 
-    savedProducts = Product.query.filter(
+    saved_products = Product.query.filter(
         Product.userId == user_id, Product.invoiceName == product['invoiceName']).all()
-    for curr in savedProducts:
+    for curr in saved_products:
         db.session.delete(curr)
 
     db.session.add(product_store)
@@ -133,10 +133,10 @@ def get_product(user_id):
             'invoiceBaseQuantity': product.invoiceBaseQuantity,
         })
 
-    products.sort(key=get_invoiceName)
+    products.sort(key=get_invoice_name)
 
     return {'products': products}
 
 
-def get_invoiceName(invoice):
+def get_invoice_name(invoice):
     return invoice['invoiceName']
