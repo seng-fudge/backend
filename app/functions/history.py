@@ -14,10 +14,11 @@ def add_customer(customer, user_id):
                               city=customer['city'], postcode=customer['postcode'],
                               country=customer['country'], userId=user_id)
 
-    savedAlready = Customer.query.filter(Customer.userId == user_id, Customer.buyerReference == customer['buyerReference']).all();
-    
+    savedAlready = Customer.query.filter(
+        Customer.userId == user_id, Customer.buyerReference == customer['buyerReference']).all()
+
     for curr in savedAlready:
-        db.session.delete(curr);
+        db.session.delete(curr)
 
     db.session.add(customer_store)
     db.session.commit()
@@ -48,6 +49,7 @@ def get_customer(user_id):
 
     return {'customers': customers}
 
+
 def get_reference(customer):
     return customer['buyerReference']
 
@@ -60,10 +62,10 @@ def add_payment(payment, user_id):
                             paymentTerms=payment['paymentTerms'],
                             userId=user_id)
 
-    savedPayments = Payment.query.filter(Payment.userId == user_id, Payment.paymentId == payment['paymentId']).all()
+    savedPayments = Payment.query.filter(
+        Payment.userId == user_id, Payment.paymentId == payment['paymentId']).all()
     for curr in savedPayments:
         db.session.delete(curr)
-
 
     db.session.add(payment_store)
     db.session.commit()
@@ -89,8 +91,10 @@ def get_payment(user_id):
 
     return {'payments': payments}
 
+
 def get_paymentId(payment):
     return payment['paymentId']
+
 
 def add_product(product, user_id):
 
@@ -102,7 +106,8 @@ def add_product(product, user_id):
                             invoiceBaseQuantity=product['invoiceBaseQuantity'],
                             userId=user_id)
 
-    savedProducts = Product.query.filter(Product.userId == user_id, Product.invoiceName == product['invoiceName']).all()
+    savedProducts = Product.query.filter(
+        Product.userId == user_id, Product.invoiceName == product['invoiceName']).all()
     for curr in savedProducts:
         db.session.delete(curr)
 
@@ -127,10 +132,11 @@ def get_product(user_id):
             'invoicePriceAmount': product.invoicePriceAmount,
             'invoiceBaseQuantity': product.invoiceBaseQuantity,
         })
-    
+
     products.sort(key=get_invoiceName)
 
     return {'products': products}
+
 
 def get_invoiceName(invoice):
     return invoice['invoiceName']
