@@ -7,7 +7,8 @@ from app.functions.error import AccessError, InputError
 from app.models import Accountdata, User, HistoricInvoice, db
 
 NAMESPACE = {'cac': 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
-    'cbc':'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'}
+             'cbc': 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2'}
+
 
 def get_data(user_id: int):
     """
@@ -35,17 +36,18 @@ def get_data(user_id: int):
         "currency" : "AUD"
     }
     """
-    accountinfo = Accountdata.query.filter(Accountdata.userId == user_id).first()
+    accountinfo = Accountdata.query.filter(
+        Accountdata.userId == user_id).first()
     user_data = {
-        "businessName" : accountinfo.businessName,
-        "contactName" : accountinfo.contactName,
-        "electronicMail" : accountinfo.electronicMail,
-        "supplierID" : accountinfo.supplierID,
-        "street" : accountinfo.street,
-        "city" : accountinfo.city,
-        "postcode" : accountinfo.postcode,
-        "country" : accountinfo.country,
-        "currency" : accountinfo.currency
+        "businessName": accountinfo.businessName,
+        "contactName": accountinfo.contactName,
+        "electronicMail": accountinfo.electronicMail,
+        "supplierID": accountinfo.supplierID,
+        "street": accountinfo.street,
+        "city": accountinfo.city,
+        "postcode": accountinfo.postcode,
+        "country": accountinfo.country,
+        "currency": accountinfo.currency
     }
     data = [
         accountinfo.businessName,
@@ -62,6 +64,7 @@ def get_data(user_id: int):
         return make_response(jsonify(user_data), 204)
 
     return user_data
+
 
 def update_data(user_id: int, user_data: object):
     """
@@ -104,7 +107,7 @@ def update_data(user_id: int, user_data: object):
         Input error - when given bad data
     """
     good_data(user_data)
-    #get user
+    # get user
     accountinfo = Accountdata.query.filter(Accountdata.id == user_id).first()
     accountinfo.businessName = user_data["businessName"]
     accountinfo.contactName = user_data["contactName"]
@@ -117,23 +120,26 @@ def update_data(user_id: int, user_data: object):
     accountinfo.currency = user_data["currency"]
     db.session.commit()
 
+
 def add_invoice_to_history(user_id, xml):
     user = User.query.filter(User.id == user_id).first()
     invoice = extract_from_ubl(xml)
 
     new_invoice = HistoricInvoice(
         user=user,
-        time= datetime.timestamp(datetime.now()),
+        time=datetime.timestamp(datetime.now()),
         recipient=invoice['cust_name'],
         email=invoice['cust_email'],
         due=invoice['due_date']
-        )
+    )
 
     db.session.add(new_invoice)
     db.session.commit()
 
+
 def get_invoice_history(user_id):
-    invoices = HistoricInvoice.query.filter(HistoricInvoice.userId == user_id).order_by(HistoricInvoice.time.desc())
+    invoices = HistoricInvoice.query.filter(
+        HistoricInvoice.userId == user_id).order_by(HistoricInvoice.time.desc())
     invoices_arr = []
 
     for invoice in invoices:
@@ -143,7 +149,8 @@ def get_invoice_history(user_id):
             "time": invoice.time,
             "due": invoice.due
         })
-    return {"history" : invoices_arr}
+    return {"history": invoices_arr}
+
 
 def good_data(user_data: object):
 
@@ -178,6 +185,7 @@ def good_data(user_data: object):
     if not re.fullmatch(email_regex, user_data["electronicMail"]):
         raise InputError(description="Email is invalid")
 
+
 def extract_from_ubl(xml: str):
     """
     Extracts customer Name, email and invoice due date.
@@ -197,12 +205,12 @@ def extract_from_ubl(xml: str):
     """
     invoice = xmltree.fromstring(xml)
 
-    cus_party = invoice.find('cac:AccountingCustomerParty',NAMESPACE)
-    customer = cus_party.find('cac:Party',NAMESPACE)
-    continfo = customer.find('cac:Contact',NAMESPACE)
+    cus_party = invoice.find('cac:AccountingCustomerParty', NAMESPACE)
+    customer = cus_party.find('cac:Party', NAMESPACE)
+    continfo = customer.find('cac:Contact', NAMESPACE)
 
     return {
-        "cust_name": continfo.find('cbc:Name',NAMESPACE).text,
-        "cust_email": continfo.find('cbc:ElectronicMail',NAMESPACE).text,
-        "due_date": invoice.find('cbc:DueDate',NAMESPACE).text
+        "cust_name": continfo.find('cbc:Name', NAMESPACE).text,
+        "cust_email": continfo.find('cbc:ElectronicMail', NAMESPACE).text,
+        "due_date": invoice.find('cbc:DueDate', NAMESPACE).text
     }
